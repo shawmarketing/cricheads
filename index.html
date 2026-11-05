@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cricheads Auction Desk</title>
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --navy:#011649; --navy2:#0B2A6F; --red:#E22F0C; --red2:#C02408;
+  --bg:#EEF1F7; --card:#FFFFFF; --ink:#0E1630; --muted:#5E6A85; --line:#D9DFEB;
+  --under:#12823B; --underbg:#E3F5E9; --over:#D21F0A; --overbg:#FDE6E1;
+  --on:#1D5FD1; --onbg:#E1EBFC; --gold:#B7860B;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,sans-serif}
+button,input,select{font:inherit}
+.hide{display:none!important}
+h1,h2,h3,.cond{font-family:"Barlow Condensed",Inter,sans-serif;letter-spacing:.02em}
+/* login */
+#login{min-height:100vh;display:grid;place-items:center;padding:16px;
+  background:linear-gradient(115deg,var(--navy) 0 50%,var(--red) 50% 100%)}
+.loginbox{background:#fff;border-radius:18px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 20px 50px rgba(0,0,0,.3);text-align:center}
+.loginbox img{width:110px}
+.loginbox h1{margin:8px 0 18px;color:var(--navy);font-size:28px;text-transform:uppercase}
+.field{display:block;text-align:left;margin-bottom:12px}
+.field span{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+input[type=text],input[type=password],input[type=number],input[type=search]{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);outline:none}
+input:focus{border-color:var(--navy2);box-shadow:0 0 0 3px rgba(11,42,111,.12)}
+.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer;background:var(--navy);color:#fff}
+.btn:hover{background:var(--navy2)}
+.btn.red{background:var(--red)} .btn.red:hover{background:var(--red2)}
+.btn.ghost{background:transparent;color:var(--navy);border:1.5px solid var(--line)}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:8px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.err{color:var(--over);font-size:13px;min-height:18px;margin:4px 0}
+/* header */
+header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.stripe{height:5px;background:linear-gradient(90deg,var(--navy) 0 50%,var(--red) 50%)}
+.hbar{display:flex;align-items:center;gap:12px;padding:10px 16px;max-width:1280px;margin:0 auto}
+.hbar img{height:46px;background:#fff;border-radius:6px;padding:2px}
+.hbar h1{margin:0;font-size:24px;text-transform:uppercase;line-height:1}
+.hbar .sub{font-size:12px;opacity:.75}
+.hbar .grow{flex:1}
+.tabs{display:flex;gap:4px}
+.tabs button{background:transparent;color:#fff;border:0;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;opacity:.75}
+.tabs button.on{background:var(--red);opacity:1}
+.sync{font-size:12px;padding:4px 8px;border-radius:20px;background:rgba(255,255,255,.12);white-space:nowrap;cursor:pointer}
+.sync.bad{background:var(--red)}
+.kitty{display:grid;grid-template-columns:repeat(6,1fr);max-width:1280px;margin:0 auto;padding:0 16px 10px;gap:8px}
+.k{background:rgba(255,255,255,.08);border-radius:10px;padding:6px 10px}
+.k b{display:block;font-family:"Barlow Condensed";font-size:24px;line-height:1.1}
+.k span{font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
+.k.main{background:var(--red)} .k.main span{opacity:.9}
+.bar{height:6px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:#fff}
+main{max-width:1280px;margin:0 auto;padding:16px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+.card{background:var(--card);border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(1,22,73,.08);border:1px solid var(--line)}
+.card h2{margin:0 0 12px;font-size:22px;text-transform:uppercase;color:var(--navy);display:flex;align-items:center;gap:8px}
+.card h2 .pill{font-family:Inter;font-size:12px;background:var(--bg);color:var(--muted);border-radius:20px;padding:2px 8px;letter-spacing:0;text-transform:none}
+.mt{margin-top:16px}
+/* buy panel */
+.buy{border-top:5px solid var(--red)}
+.ac{position:relative}
+.ac .ghost{position:absolute;left:0;top:0;right:0;padding:13px 14px;border:1.5px solid transparent;pointer-events:none;white-space:pre;overflow:hidden;color:transparent;font-size:20px;font-weight:600}
+.ac .ghost em{color:#A8B2C7;font-style:normal}
+.ac .ghost .hint{color:var(--navy2);font-weight:500;font-size:14px;background:var(--onbg);border-radius:6px;padding:2px 6px;margin-left:8px}
+.ac input{font-size:20px;font-weight:600;padding:13px 14px;background:transparent;position:relative}
+.acwrap{background:#fff;border-radius:10px}
+.accept{position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:2}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:30px;margin:10px 0 4px;font-size:14px;color:var(--muted)}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.04em}
+.r-bat{background:#E1EBFC;color:#1D4FA8}.r-bowl{background:#FDE6E1;color:#B3260B}.r-ar{background:#EFE6FB;color:#6A2DB3}.r-wk{background:#FFF3D6;color:#8A6200}.r-x{background:#ECEFF4;color:#4A5570}
+.star{color:var(--gold);font-weight:700}
+.row2{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+.price input{font-size:20px;font-weight:700}
+.verdict{border-radius:10px;padding:10px 12px;font-weight:700;margin-top:10px;font-size:15px}
+.v-under{background:var(--underbg);color:var(--under)} .v-over{background:var(--overbg);color:var(--over)} .v-on{background:var(--onbg);color:var(--on)} .v-none{background:var(--bg);color:var(--muted)}
+.roles{display:flex;gap:6px;flex-wrap:wrap}
+.roles button{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-weight:600;font-size:13px}
+.roles button.on{border-color:var(--navy);background:var(--navy);color:#fff}
+.warn{background:#FFF3D6;color:#7A5600;border-radius:10px;padding:8px 12px;font-size:13px;margin-top:10px}
+.links{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:13px}
+.link{background:none;border:0;color:var(--navy2);text-decoration:underline;cursor:pointer;padding:0}
+.link.red{color:var(--red2)}
+/* tables */
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:left;padding:8px 6px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.fixed td{background:#F6F8FC}
+.diff{font-weight:700;border-radius:6px;padding:3px 7px;font-size:13px;white-space:nowrap}
+.d-under{background:var(--underbg);color:var(--under)} .d-over{background:var(--overbg);color:var(--over)} .d-on{background:var(--onbg);color:var(--on)} .d-none{color:var(--muted)}
+.pname{font-weight:600}
+.small{font-size:12px;color:var(--muted)}
+.icon{background:none;border:0;cursor:pointer;color:var(--muted);font-size:15px;padding:4px}
+.icon:hover{color:var(--red)}
+.empty{color:var(--muted);text-align:center;padding:24px;font-size:14px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filters button{border:1px solid var(--line);background:#fff;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer}
+.filters button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+/* wishlist */
+.wish{position:sticky;top:178px;border-top:5px solid var(--navy);max-height:calc(100vh - 195px);display:flex;flex-direction:column}
+.wish .list{overflow:auto;margin:0 -16px;padding:0 16px}
+.wi{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.wi .nm{flex:1;min-width:0}
+.wi .nm div{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wi .tg{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.wi.got .nm div{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--under);color:var(--muted)}
+.wi.lost .nm div{text-decoration:line-through;text-decoration-color:var(--over);color:#9AA3B8}
+.wi.got{background:linear-gradient(90deg,var(--underbg),transparent)}
+.wi.lost{opacity:.6}
+.wi .tick{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;flex:none;border:1.5px solid var(--line);color:transparent}
+.wi.got .tick{background:var(--under);border-color:var(--under);color:#fff}
+.wi.lost .tick{background:#9AA3B8;border-color:#9AA3B8;color:#fff}
+.wi.cur{outline:2px solid var(--red);outline-offset:-2px;border-radius:6px}
+.wsum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.wsum div{background:var(--bg);border-radius:8px;padding:6px 8px;text-align:center}
+.wsum b{display:block;font-family:"Barlow Condensed";font-size:20px;color:var(--navy)}
+.wsum span{font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}
+/* setup */
+.setup{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.fixedrow{display:grid;grid-template-columns:90px 1fr 120px;gap:8px;align-items:center;margin-bottom:8px}
+.fixedrow label{font-weight:700;color:var(--navy);font-size:13px}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;cursor:pointer;color:var(--muted);font-size:14px;display:block}
+.drop:hover{border-color:var(--navy2);color:var(--navy)}
+.drop input{display:none}
+.ok{color:var(--under);font-weight:600;font-size:13px;margin-top:6px}
+.note{font-size:13px;color:var(--muted);margin:6px 0 10px}
+.logoprev{display:flex;align-items:center;gap:12px}
+.logoprev img{height:70px;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff}
+code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
+.mkitty{display:none}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;z-index:50;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:92vw}
+@media (max-width:980px){
+  .grid,.setup{grid-template-columns:1fr}
+  .wish{position:static;max-height:none}
+  .wish .list{max-height:420px}
+  .kitty{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:980px){
+  .leftcol{display:contents}
+  .buy{order:1}.wish{order:2}.squadcard{order:3;margin-top:0}
+  .grid{display:flex;flex-direction:column;align-items:stretch}
+}
+@media (max-width:560px){
+  header{position:static}
+  .mkitty{display:flex;justify-content:space-between;gap:8px;margin-top:10px;background:var(--navy);color:#fff;border-radius:10px;padding:8px 12px;font-size:13px;position:sticky;top:6px;z-index:5}
+  .mkitty b{font-family:"Barlow Condensed";font-size:18px}
+  .hbar{flex-wrap:wrap;padding:8px 12px;gap:8px}
+  .hbar img{height:38px}.hbar h1{font-size:20px}
+  .tabs{order:3;width:100%}.tabs button{flex:1}
+  .kitty{padding:0 12px 8px;gap:6px}.k{padding:5px 7px}.k b{font-size:19px}.k span{font-size:9px}
+  main{padding:12px}
+  .row2{grid-template-columns:1fr 1fr}.row2 .btn{grid-column:1/-1}
+  .two,.three{grid-template-columns:1fr}
+  .fixedrow{grid-template-columns:1fr 1fr}.fixedrow label{grid-column:1/-1}
+  .hidem{display:none}
+  td,th{padding:8px 4px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<section id="login">
+  <form class="loginbox" id="loginForm" autocomplete="on">
+    <img src="logo.png" alt="Team logo">
+    <h1>Auction Desk</h1>
+    <label class="field"><span>Username</span><input type="text" id="lu" autocomplete="username" autocapitalize="off" required></label>
+    <label class="field"><span>Password</span><input type="password" id="lp" autocomplete="current-password" required></label>
+    <div class="err" id="lerr"></div>
+    <button class="btn red" style="width:100%" type="submit" id="lbtn">Log in</button>
+  </form>
+</section>
+
+<!-- APP -->
+<div id="app" class="hide">
+<header>
+  <div class="stripe"></div>
+  <div class="hbar">
+    <img id="hLogo" src="logo.png" alt="">
+    <div><h1 id="hTeam">Cricheads</h1><div class="sub">Auction Desk</div></div>
+    <div class="grow"></div>
+    <div class="sync" id="sync" title="Tap to refresh from cloud">—</div>
+    <nav class="tabs"><button data-tab="auction" class="on">Auction</button><button data-tab="setup">Setup</button><button id="logout" title="Log out">Log out</button></nav>
+  </div>
+  <div class="kitty">
+    <div class="k main"><span>Kitty left</span><b id="kLeft">0</b><div class="bar"><i id="kBar"></i></div></div>
+    <div class="k"><span>Total kitty</span><b id="kTotal">0</b></div>
+    <div class="k"><span>Spent</span><b id="kSpent">0</b></div>
+    <div class="k"><span>Squad</span><b id="kSquad">0</b></div>
+    <div class="k"><span>Max next bid</span><b id="kMax">—</b></div>
+    <div class="k"><span>vs target</span><b id="kVs">0</b></div>
+  </div>
+</header>
+
+<main>
+<!-- AUCTION TAB -->
+<section id="tab-auction">
+ <div class="grid">
+  <div class="leftcol">
+   <div class="card buy">
+    <h2>Buy a player</h2>
+    <div class="ac">
+      <div class="acwrap"><div class="ghost" id="ghost"></div><input type="text" id="pName" placeholder="Start typing a name…" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false"></div>
+      <button class="btn sm accept hide" id="acceptBtn" type="button">Use ↵</button>
+    </div>
+    <div class="meta" id="pMeta"><span class="small">Tab, → or Enter accepts the suggestion · ↓ ↑ for the next match</span></div>
+    <div id="newRole" class="hide" style="margin:6px 0 4px">
+      <div class="small" style="margin-bottom:6px">Not in your player file — pick a role:</div>
+      <div class="roles" id="roleBtns"></div>
+    </div>
+    <div class="row2">
+      <label class="field price" style="margin:0"><span>Bought for</span><input type="number" id="pPrice" inputmode="numeric" min="0" placeholder="0"></label>
+      <label class="field" style="margin:0"><span>Target</span><input type="number" id="pTarget" inputmode="numeric" min="0" placeholder="—"></label>
+      <button class="btn red" id="buyBtn" style="height:48px;padding:0 22px">Add to squad</button>
+    </div>
+    <div class="mkitty" id="mKitty"></div>
+    <div id="verdict"></div>
+    <div id="buyWarn"></div>
+    <div class="links">
+      <button class="link red" id="goneBtn" type="button">Mark as bought by another team</button>
+      <button class="link" id="undoBtn" type="button">Undo last purchase</button>
+    </div>
+   </div>
+
+   <div class="card mt squadcard">
+    <h2>My squad <span class="pill" id="sqCount">0</span></h2>
+    <div class="filters" id="sqFilters"></div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>#</th><th>Player</th><th class="n hidem">Target</th><th class="n">Bought</th><th class="n">vs target</th><th></th></tr></thead>
+      <tbody id="sqBody"></tbody>
+    </table></div>
+    <div class="links"><button class="link" id="exportBtn">Download squad (Excel)</button></div>
+   </div>
+  </div>
+
+  <aside class="card wish">
+    <h2>Wish list <span class="pill" id="wCount">0</span></h2>
+    <div class="wsum">
+      <div><b id="wGot">0</b><span>Got</span></div>
+      <div><b id="wLost">0</b><span>Lost</span></div>
+      <div><b id="wNeed">0</b><span>Targets left</span></div>
+    </div>
+    <div id="wWarn"></div>
+    <div class="list" id="wList"></div>
+  </aside>
+ </div>
+</section>
+
+<!-- SETUP TAB -->
+<section id="tab-setup" class="hide">
+ <div class="setup">
+  <div class="card">
+    <h2>Team &amp; kitty</h2>
+    <label class="field"><span>Team name</span><input type="text" id="sTeam"></label>
+    <div class="three">
+      <label class="field"><span>Total kitty</span><input type="number" id="sPurse" inputmode="numeric" min="0"></label>
+      <label class="field"><span>Squad size</span><input type="number" id="sSize" inputmode="numeric" min="0" placeholder="optional"></label>
+      <label class="field"><span>Base / min bid</span><input type="number" id="sMin" inputmode="numeric" min="0" placeholder="optional"></label>
+    </div>
+    <p class="note">Squad size and base bid let the app work out the most you can bid on the next player and still fill the squad. Leave blank if there is no such rule.</p>
+    <div class="logoprev"><img id="sLogoPrev" src="logo.png" alt=""><label class="drop" style="flex:1">Change logo<input type="file" id="sLogo" accept="image/*"></label></div>
+    <button class="btn mt" id="saveTeam">Save team &amp; kitty</button>
+  </div>
+
+  <div class="card">
+    <h2>Fixed players</h2>
+    <p class="note">Two owners and the icon player — price set before the auction, deducted from the kitty straight away.</p>
+    <div id="fixedRows"></div>
+    <button class="btn" id="saveFixed">Save fixed players</button>
+  </div>
+
+  <div class="card">
+    <h2>Player pool file</h2>
+    <p class="note">Excel or CSV with columns <code>Name</code>, <code>Role</code> (Batter / Bowler / All-rounder / WK), <code>Target</code>. Header names are flexible. This feeds the name suggestions.</p>
+    <label class="drop">Upload player file (.xlsx / .csv)<input type="file" id="fPool" accept=".xlsx,.xls,.csv"></label>
+    <div id="poolInfo"></div>
+  </div>
+
+  <div class="card">
+    <h2>Wish list file</h2>
+    <p class="note">Excel or CSV with <code>Name</code> and <code>Target</code> (Role optional). Order in the file = order on screen. A wish-list target overrides the pool target for that player.</p>
+    <label class="drop">Upload wish list (.xlsx / .csv)<input type="file" id="fWish" accept=".xlsx,.xls,.csv"></label>
+    <div id="wishInfo"></div>
+  </div>
+
+  <div class="card">
+    <h2>Cloud sync (GitHub)</h2>
+    <p class="note">Keeps the same data on every phone and laptop. Paste your GitHub token once here; other devices then only need the login.</p>
+    <label class="field"><span>GitHub token</span><input type="password" id="gTok" placeholder="ghp_…" autocomplete="off"></label>
+    <label class="field"><span>Site repository (owner/repo)</span><input type="text" id="gRepo" placeholder="yourname/cricheads"></label>
+    <button class="btn" id="gSave">Connect &amp; sync</button>
+    <div id="gInfo" class="note"></div>
+  </div>
+
+  <div class="card">
+    <h2>Data</h2>
+    <p class="note">Backup / restore everything as a file, or start a fresh auction.</p>
+    <div class="links" style="margin-top:0">
+      <button class="btn ghost sm" id="backupBtn">Download backup</button>
+      <label class="btn ghost sm" style="display:inline-block">Restore backup<input type="file" id="restoreF" accept=".json" class="hide"></label>
+      <button class="btn ghost sm" id="resetGone">Clear "bought by others"</button>
+      <button class="btn red sm" id="resetAll">Reset auction</button>
+    </div>
+  </div>
+ </div>
+</section>
+</main>
+</div>
+<div id="toast" class="toast hide"></div>
+
+<script>
+/* ======== constants ======== */
+const LOGIN_HASH = "f2e65126f6d559bb7553c5674c610b159efbd99e9a2218acc57530b8839bb6cd"; // sha256("admin|admin123%")
+const LS = "cricheads_auction_v1", LS_TOK = "cricheads_tok", LS_REPO = "cricheads_repo", SS_PW = "cricheads_pw";
+const GIST_DESC = "Cricheads auction data (private)", GIST_FILE = "auction.json";
+const ROLES = [["Batter","bat"],["Bowler","bowl"],["All-rounder","ar"],["Wicket-keeper","wk"]];
+const blank = () => ({v:1,updatedAt:0,team:{name:"Cricheads",logo:""},purse:0,squadSize:0,minBid:0,
+  pool:[],wish:[],squad:[],gone:[],fixed:[{slot:"Owner 1",name:"",role:"",price:0},{slot:"Owner 2",name:"",role:"",price:0},{slot:"Icon",name:"",role:"",price:0}]});
+let S = blank(), password = "", gistId = null, saveTimer = null, syncState = "local";
+let sqFilter = "all", sel = null, matches = [], mIdx = 0, newRole = "";
+
+/* ======== helpers ======== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s => String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const num = v => { const n = parseFloat(String(v??"").replace(/[^0-9.\-]/g,"")); return isFinite(n)?n:0; };
+const fmt = n => (Math.round(n*100)/100).toLocaleString("en-IN");
+const sgn = n => (n>0?"+":n<0?"−":"")+fmt(Math.abs(n));
+function roleKey(r){ const s=norm(r);
+  if(!s) return ""; if(/wk|keep/.test(s)) return "wk"; if(/all|^ar$|allround/.test(s)) return "ar";
+  if(/bowl/.test(s)) return "bowl"; if(/bat/.test(s)) return "bat"; return "x"; }
+function roleName(r){ const k=roleKey(r); const f=ROLES.find(x=>x[1]===k); return f?f[0]:(r||""); }
+const roleTag = r => r ? `<span class="tag r-${roleKey(r)||"x"}">${esc(roleName(r))}</span>` : "";
+function toast(m){ const t=$("toast"); t.textContent=m; t.classList.remove("hide"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.add("hide"),2600); }
+async function sha256(s){ const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""); }
+const b64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const unb64 = s => Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const utf8b64 = s => btoa(unescape(encodeURIComponent(s)));
+
+/* ======== derived ======== */
+function fixedEntries(){ return S.fixed.filter(f=>f.name.trim()).map(f=>({id:"fx-"+f.slot,name:f.name.trim(),role:f.role,price:num(f.price),target:null,fixed:f.slot})); }
+function allSquad(){ return [...fixedEntries(), ...S.squad]; }
+function spent(){ return allSquad().reduce((a,p)=>a+num(p.price),0); }
+function left(){ return num(S.purse)-spent(); }
+function ownedKeys(){ return new Set(allSquad().map(p=>norm(p.name))); }
+function goneKeys(){ return new Set(S.gone.map(norm)); }
+function wishOf(name){ const k=norm(name); return S.wish.find(w=>norm(w.name)===k); }
+function poolOf(name){ const k=norm(name); return S.pool.find(w=>norm(w.name)===k); }
+function targetOf(name){ const w=wishOf(name); if(w&&w.target!=null&&w.target!=="") return num(w.target); const p=poolOf(name); return p&&p.target!=null&&p.target!==""?num(p.target):null; }
+function maxBid(){ const l=left(); if(!S.squadSize) return null; const slots=S.squadSize-allSquad().length; if(slots<=0) return 0; return Math.max(0,l-num(S.minBid)*(slots-1)); }
+function diffCls(price,target){ if(target==null) return "none"; return price<target?"under":price>target?"over":"on"; }
+
+/* ======== storage & sync ======== */
+function saveLocal(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
+function loadLocal(){ try{ const d=JSON.parse(localStorage.getItem(LS)); if(d&&d.v) S=Object.assign(blank(),d); }catch(e){} }
+function commit(){ S.updatedAt=Date.now(); saveLocal(); render(); queueCloud(); }
+function setSync(state,txt){ syncState=state; const el=$("sync"); el.textContent=txt; el.classList.toggle("bad",state==="error"); }
+function tok(){ try{return localStorage.getItem(LS_TOK)||"";}catch(e){return "";} }
+function repoGuess(){ try{ const r=localStorage.getItem(LS_REPO); if(r) return r; }catch(e){}
+  const h=location.hostname; if(h.endsWith(".github.io")){ const owner=h.split(".")[0]; const seg=location.pathname.split("/").filter(Boolean)[0]; return owner+"/"+(seg&&!seg.includes(".")?seg:h); } return ""; }
+async function gh(path,opt={}){
+  const r=await fetch("https://api.github.com"+path,{...opt,headers:{Authorization:"Bearer "+tok(),Accept:"application/vnd.github+json",...(opt.body?{"Content-Type":"application/json"}:{})}});
+  if(!r.ok){ const t=await r.text(); throw new Error(r.status+" "+(t.slice(0,140))); } return r.status===204?null:r.json();
+}
+async function findGist(){
+  for(let page=1;page<=5;page++){ const list=await gh(`/gists?per_page=100&page=${page}`);
+    const g=list.find(x=>x.description===GIST_DESC && x.files[GIST_FILE]); if(g) return g.id; if(list.length<100) break; }
+  return null;
+}
+async function cloudPull(){
+  if(!tok()) { setSync("local","Saved on this device"); return; }
+  setSync("busy","Syncing…");
+  try{
+    gistId = gistId || await findGist();
+    if(!gistId){ await cloudPush(); return; }
+    const g=await gh("/gists/"+gistId); const f=g.files[GIST_FILE];
+    let txt=f.content; if(f.truncated){ txt=await (await fetch(f.raw_url)).text(); }
+    const d=JSON.parse(txt);
+    if(d && d.v && (d.updatedAt||0) >= (S.updatedAt||0)){ S=Object.assign(blank(),d); saveLocal(); render(); }
+    else if(d && (d.updatedAt||0) < (S.updatedAt||0)){ await cloudPush(); return; }
+    setSync("ok","Synced "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}));
+  }catch(e){ console.error(e); setSync("error","Sync failed – saved here"); }
+}
+async function cloudPush(){
+  if(!tok()) return;
+  setSync("busy","Saving…");
+  const body={description:GIST_DESC,files:{[GIST_FILE]:{content:JSON.stringify(S)}}};
+  try{
+    if(!gistId) gistId=await findGist();
+    if(gistId) await gh("/gists/"+gistId,{method:"PATCH",body:JSON.stringify(body)});
+    else { const g=await gh("/gists",{method:"POST",body:JSON.stringify({...body,public:false})}); gistId=g.id; }
+    setSync("ok","Synced "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}));
+  }catch(e){ console.error(e); setSync("error","Sync failed – saved here"); }
+}
+function queueCloud(){ if(!tok()){ setSync("local","Saved on this device"); return; } setSync("busy","Saving…"); clearTimeout(saveTimer); saveTimer=setTimeout(cloudPush,700); }
+
+/* token kept in the site repo, encrypted with the login password, so other devices only need to log in */
+async function keyFrom(pw,salt){ const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:300000,hash:"SHA-256"},base,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]); }
+async function encryptTok(t,pw){ const salt=crypto.getRandomValues(new Uint8Array(16)), iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},await keyFrom(pw,salt),new TextEncoder().encode(t)); return {salt:b64(salt),iv:b64(iv),ct:b64(ct)}; }
+async function decryptTok(c,pw){ const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(c.iv)},await keyFrom(pw,unb64(c.salt)),unb64(c.ct)); return new TextDecoder().decode(pt); }
+async function tokenFromSite(){
+  try{ const r=await fetch("sync.json?"+Date.now(),{cache:"no-store"}); if(!r.ok) return false;
+    const t=await decryptTok(await r.json(),password); localStorage.setItem(LS_TOK,t); return true; }catch(e){ return false; }
+}
+async function writeSiteToken(t,repo){
+  const enc=JSON.stringify(await encryptTok(t,password));
+  let sha; try{ sha=(await gh(`/repos/${repo}/contents/sync.json`)).sha; }catch(e){}
+  await gh(`/repos/${repo}/contents/sync.json`,{method:"PUT",body:JSON.stringify({message:"Update encrypted sync key",content:utf8b64(enc),...(sha?{sha}:{})})});
+}
+
+/* ======== file parsing ======== */
+function readSheet(file){ return new Promise((res,rej)=>{ const fr=new FileReader();
+  fr.onload=e=>{ try{ const wb=XLSX.read(new Uint8Array(e.target.result),{type:"array"}); const ws=wb.Sheets[wb.SheetNames[0]];
+    res(XLSX.utils.sheet_to_json(ws,{header:1,defval:"",raw:false})); }catch(err){rej(err);} };
+  fr.onerror=rej; fr.readAsArrayBuffer(file); }); }
+function mapRows(rows){
+  let h=-1; for(let i=0;i<Math.min(rows.length,10);i++){ if(rows[i].some(c=>/name|player/i.test(c))){h=i;break;} }
+  const head=h>=0?rows[h].map(c=>norm(c)):[]; const body=h>=0?rows.slice(h+1):rows;
+  const find=re=>head.findIndex(c=>re.test(c));
+  let ni=find(/name|player/), ri=find(/role|type|category|skill|speciality|specialty/), ti=find(/target|price|value|budget|amount|bid|base/);
+  if(ni<0) ni=0; if(h<0){ ri=1; ti=2; }
+  const out=[], seen=new Set();
+  for(const r of body){ const name=String(r[ni]??"").trim().replace(/\s+/g," "); if(!name) continue; const k=norm(name); if(seen.has(k)) continue; seen.add(k);
+    const tv=ti>=0?String(r[ti]??"").trim():""; out.push({name,role:ri>=0?roleName(r[ri]):"",target:tv===""?null:num(tv)}); }
+  return out;
+}
+
+/* ======== render ======== */
+function render(){
+  $("hTeam").textContent=S.team.name||"My Team";
+  const logo=S.team.logo||"logo.png"; $("hLogo").src=logo; $("sLogoPrev").src=logo;
+  const total=num(S.purse), sp=spent(), l=total-sp, sq=allSquad();
+  $("kTotal").textContent=fmt(total); $("kSpent").textContent=fmt(sp); $("kLeft").textContent=fmt(l);
+  $("kBar").style.width=(total>0?Math.max(0,Math.min(100,l/total*100)):0)+"%";
+  $("kSquad").textContent=sq.length+(S.squadSize?" / "+S.squadSize:"");
+  const mb=maxBid(); $("kMax").textContent=mb==null?fmt(Math.max(0,l)):fmt(mb);
+  const tracked=S.squad.filter(p=>p.target!=null); const vs=tracked.reduce((a,p)=>a+(num(p.price)-num(p.target)),0);
+  $("mKitty").innerHTML=`<span>Left <b>${fmt(l)}</b></span><span>Max bid <b>${mb==null?fmt(Math.max(0,l)):fmt(mb)}</b></span><span>Squad <b>${sq.length}${S.squadSize?"/"+S.squadSize:""}</b></span>`;
+  $("kVs").textContent=tracked.length?sgn(vs):"—"; $("kVs").style.color=vs>0?"#FFB4A6":vs<0?"#9BE5B4":"";
+  renderSquad(); renderWish(); updateBuy();
+}
+function renderSquad(){
+  const sq=allSquad(); $("sqCount").textContent=sq.length;
+  const counts={all:sq.length}; sq.forEach(p=>{const k=roleKey(p.role)||"x"; counts[k]=(counts[k]||0)+1;});
+  $("sqFilters").innerHTML=[["all","All"],...ROLES.map(r=>[r[1],r[0]+"s"])].map(([k,l])=>`<button data-f="${k}" class="${sqFilter===k?"on":""}">${l} · ${counts[k]||0}</button>`).join("");
+  const rows=sq.filter(p=>sqFilter==="all"||(roleKey(p.role)||"x")===sqFilter);
+  if(!rows.length){ $("sqBody").innerHTML=`<tr><td colspan="6" class="empty">${sq.length?"No players in this role yet.":"No players yet — buy your first one above."}</td></tr>`; return; }
+  $("sqBody").innerHTML=rows.map((p,i)=>{
+    const t=p.target, c=diffCls(num(p.price),t), d=t==null?"—":(c==="on"?"On target":sgn(num(p.price)-t));
+    const w=wishOf(p.name)?' <span class="star" title="On wish list">★</span>':"";
+    return `<tr class="${p.fixed?"fixed":""}"><td class="small">${i+1}</td>
+      <td><div class="pname">${esc(p.name)}${w}</div><div>${roleTag(p.role)} ${p.fixed?`<span class="tag r-x">${esc(p.fixed)}</span>`:""}</div></td>
+      <td class="n hidem">${t==null?"—":fmt(t)}</td><td class="n"><b>${fmt(num(p.price))}</b></td>
+      <td class="n">${p.fixed?'<span class="small">Fixed</span>':`<span class="diff d-${c}">${d}</span>`}</td>
+      <td class="n">${p.fixed?"":`<button class="icon" data-edit="${p.id}" title="Edit price">✎</button><button class="icon" data-del="${p.id}" title="Remove">✕</button>`}</td></tr>`;
+  }).join("");
+}
+function renderWish(){
+  const own=new Map(allSquad().map(p=>[norm(p.name),p])), gone=goneKeys();
+  $("wCount").textContent=S.wish.length;
+  if(!S.wish.length){ $("wList").innerHTML=`<div class="empty">Upload your wish list in Setup.</div>`; $("wGot").textContent=$("wLost").textContent=$("wNeed").textContent="0"; $("wWarn").innerHTML=""; return; }
+  let got=0,lost=0,need=0; const cur=sel?norm(sel.name):"";
+  $("wList").innerHTML=S.wish.map(w=>{ const k=norm(w.name), p=own.get(k), g=!p&&gone.has(k);
+    const role=w.role||(poolOf(w.name)||{}).role||"";
+    if(p) got++; else if(g) lost++; else need+=num(w.target);
+    let right=w.target==null?"—":fmt(num(w.target)), sub="";
+    if(p){ const c=diffCls(num(p.price),w.target==null?null:num(w.target)); sub=`<span class="diff d-${c}" style="font-size:11px">${fmt(num(p.price))}</span>`; }
+    else if(g) sub=`<span class="small">gone</span>`;
+    return `<div class="wi ${p?"got":g?"lost":""} ${k===cur?"cur":""}" data-pick="${esc(w.name)}"><div class="tick">${p?"✓":g?"✕":""}</div>
+      <div class="nm"><div>${esc(w.name)}</div>${roleTag(role)}</div><div class="tg">${right}<div>${sub}</div></div></div>`;
+  }).join("");
+  $("wGot").textContent=got+"/"+S.wish.length; $("wLost").textContent=lost; $("wNeed").textContent=fmt(need);
+  $("wWarn").innerHTML= need>left() ? `<div class="warn" style="margin:0 0 10px">Remaining wish-list targets (${fmt(need)}) are more than your kitty left (${fmt(left())}). You can't get everyone at target.</div>`:"";
+}
+
+/* ======== buy panel ======== */
+function candidates(){
+  const own=ownedKeys(), gone=goneKeys(), map=new Map();
+  [...S.wish.map(w=>({name:w.name,role:w.role||((poolOf(w.name)||{}).role)||"",wish:true})), ...S.pool.map(p=>({name:p.name,role:p.role,wish:!!wishOf(p.name)}))]
+    .forEach(c=>{const k=norm(c.name); if(!own.has(k)&&!gone.has(k)&&!map.has(k)) map.set(k,c);});
+  return [...map.values()];
+}
+function computeMatches(q){
+  const n=q.toLowerCase().trim(); if(!n) return [];
+  const c=candidates(), pre=[], word=[], sub=[];
+  for(const x of c){ const l=x.name.toLowerCase();
+    if(l.startsWith(n)) pre.push(x); else if(l.split(/\s+/).some(w=>w.startsWith(n))) word.push(x); else if(n.length>=3&&l.includes(n)) sub.push(x); }
+  const byWish=(a,b)=>(b.wish-a.wish)||a.name.localeCompare(b.name);
+  return [...pre.sort(byWish),...word.sort(byWish),...sub.sort(byWish)];
+}
+function drawGhost(){
+  const v=$("pName").value, m=matches[mIdx], g=$("ghost");
+  if(!v||!m||norm(m.name)===norm(v)){ g.innerHTML=esc(v); $("acceptBtn").classList.add("hide"); return; }
+  const more=matches.length>1?` ${mIdx+1}/${matches.length}`:"";
+  if(m.name.toLowerCase().startsWith(v.toLowerCase())) g.innerHTML=esc(v)+`<em>${esc(m.name.slice(v.length))}</em>`+(more?`<span class="hint">${more.trim()}</span>`:"");
+  else g.innerHTML=esc(v)+`<span class="hint">→ ${esc(m.name)}${more}</span>`;
+  $("acceptBtn").classList.remove("hide");
+}
+function onType(){ sel=null; matches=computeMatches($("pName").value); mIdx=0;
+  const exact=matches.find(m=>norm(m.name)===norm($("pName").value)); if(exact){ selectPlayer(exact,false); return; }
+  drawGhost(); updateBuy(); renderWishCur(); }
+function accept(){ const m=matches[mIdx]; if(!m) return false; selectPlayer(m,true); return true; }
+function selectPlayer(m,focusPrice){
+  $("pName").value=m.name; sel=m; matches=[]; drawGhost();
+  const t=targetOf(m.name); $("pTarget").value=t==null?"":t;
+  if(focusPrice) $("pPrice").focus(); updateBuy(); renderWishCur();
+}
+function renderWishCur(){ const cur=sel?norm(sel.name):""; document.querySelectorAll(".wi").forEach(el=>{ const on=norm(el.dataset.pick)===cur; el.classList.toggle("cur",on); if(on) el.scrollIntoView({block:"nearest"}); }); }
+function updateBuy(){
+  const name=$("pName").value.trim(), price=$("pPrice").value===""?null:num($("pPrice").value), tv=$("pTarget").value, target=tv===""?null:num(tv);
+  const isNew = name && !sel && !matches.length;
+  $("newRole").classList.toggle("hide",!isNew);
+  let meta="";
+  if(sel){ meta=`${roleTag(sel.role)} ${wishOf(sel.name)?'<span class="star">★ Wish list</span>':'<span class="small">Not on wish list</span>'} ${target!=null?`<span class="small">Target <b>${fmt(target)}</b></span>`:""}`; }
+  else if(isNew){ meta=`<span class="small">New name — will be added as typed.</span>`; }
+  else meta=`<span class="small">Tab, → or Enter accepts the suggestion · ↓ ↑ for the next match</span>`;
+  $("pMeta").innerHTML=meta;
+  let v="";
+  if(price!=null && name){ const c=diffCls(price,target);
+    v= c==="none" ? `<div class="verdict v-none">No target set for this player.</div>`
+     : c==="under" ? `<div class="verdict v-under">▼ Under target by ${fmt(target-price)}</div>`
+     : c==="over" ? `<div class="verdict v-over">▲ Over target by ${fmt(price-target)}</div>`
+     : `<div class="verdict v-on">● Bang on target</div>`; }
+  $("verdict").innerHTML=v;
+  let w=""; const l=left(), mb=maxBid();
+  if(price!=null && price>l) w=`<div class="warn" style="background:var(--overbg);color:var(--over)">That's more than your kitty left (${fmt(l)}).</div>`;
+  else if(price!=null && mb!=null && price>mb) w=`<div class="warn">Paying ${fmt(price)} leaves too little to fill the squad at the base bid (max safe bid ${fmt(mb)}).</div>`;
+  else if(S.squadSize && allSquad().length>=S.squadSize) w=`<div class="warn">Squad is already full (${S.squadSize}).</div>`;
+  $("buyWarn").innerHTML=w;
+  $("buyBtn").disabled=!name||price==null||price>l;
+}
+function buy(){
+  const name=$("pName").value.trim(), price=num($("pPrice").value), tv=$("pTarget").value;
+  if(!name||$("pPrice").value===""){ toast("Enter a name and the price"); return; }
+  if(price>left()){ toast("Not enough kitty left"); return; }
+  if(ownedKeys().has(norm(name))){ toast(name+" is already in your squad"); return; }
+  const role = sel?sel.role:(newRole||"");
+  S.squad.push({id:"p"+Date.now(),name:(sel?sel.name:name),role,target:tv===""?null:num(tv),price,at:Date.now()});
+  S.gone=S.gone.filter(g=>norm(g)!==norm(name));
+  clearBuy(); commit(); toast("Added "+name+" for "+fmt(price)); $("pName").focus();
+}
+function clearBuy(){ $("pName").value=""; $("pPrice").value=""; $("pTarget").value=""; sel=null; matches=[]; newRole=""; drawGhost(); renderRoleBtns(); updateBuy(); }
+function renderRoleBtns(){ $("roleBtns").innerHTML=ROLES.map(r=>`<button type="button" data-role="${r[0]}" class="${newRole===r[0]?"on":""}">${r[0]}</button>`).join(""); }
+
+/* ======== setup ======== */
+function fillSetup(){
+  $("sTeam").value=S.team.name||""; $("sPurse").value=S.purse||""; $("sSize").value=S.squadSize||""; $("sMin").value=S.minBid||"";
+  $("fixedRows").innerHTML=S.fixed.map((f,i)=>`<div class="fixedrow"><label>${esc(f.slot)}</label>
+    <input type="text" data-fx="${i}" data-k="name" placeholder="Name" value="${esc(f.name)}" list="">
+    <input type="number" data-fx="${i}" data-k="price" placeholder="Price" inputmode="numeric" value="${f.price||""}"></div>`).join("");
+  $("poolInfo").innerHTML=S.pool.length?`<div class="ok">✓ ${S.pool.length} players loaded · ${ROLES.map(r=>r[0]+": "+S.pool.filter(p=>roleKey(p.role)===r[1]).length).join(" · ")}</div>`:"";
+  $("wishInfo").innerHTML=S.wish.length?`<div class="ok">✓ ${S.wish.length} on wish list · targets total ${fmt(S.wish.reduce((a,w)=>a+num(w.target),0))}</div>`:"";
+  $("gRepo").value=repoGuess(); $("gTok").value="";
+  $("gInfo").innerHTML=tok()?"✓ Connected on this device.":"Not connected — data is only on this device.";
+}
+async function onLogo(file){
+  const img=new Image(); img.src=URL.createObjectURL(file); await img.decode();
+  const sc=Math.min(1,360/Math.max(img.width,img.height)), c=document.createElement("canvas");
+  c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc); c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+  S.team.logo=c.toDataURL("image/png"); commit(); toast("Logo updated");
+}
+function exportSquad(){
+  const rows=allSquad().map((p,i)=>({"#":i+1,Player:p.name,Role:roleName(p.role),Type:p.fixed||(wishOf(p.name)?"Wish list":"Auction"),Target:p.target??"",Bought:num(p.price),"Vs target":p.target==null?"":num(p.price)-p.target}));
+  rows.push({}); rows.push({Player:"Total kitty",Bought:num(S.purse)}); rows.push({Player:"Spent",Bought:spent()}); rows.push({Player:"Left",Bought:left()});
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),"Squad");
+  XLSX.writeFile(wb,(S.team.name||"squad").replace(/\W+/g,"_")+"_squad.xlsx");
+}
+
+/* ======== events ======== */
+$("loginForm").addEventListener("submit",async e=>{ e.preventDefault(); $("lerr").textContent="";
+  const u=$("lu").value.trim().toLowerCase(), p=$("lp").value;
+  if(await sha256(u+"|"+p)!==LOGIN_HASH){ $("lerr").textContent="Wrong username or password"; return; }
+  password=p; try{ sessionStorage.setItem(SS_PW,p); }catch(e){} await start(); });
+async function start(){
+  $("login").classList.add("hide"); $("app").classList.remove("hide");
+  loadLocal(); render(); renderRoleBtns();
+  if(!tok()) await tokenFromSite();
+  await cloudPull();
+}
+$("logout").onclick=()=>{ try{sessionStorage.removeItem(SS_PW);}catch(e){} location.reload(); };
+document.querySelectorAll(".tabs [data-tab]").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs [data-tab]").forEach(x=>x.classList.toggle("on",x===b));
+  $("tab-auction").classList.toggle("hide",b.dataset.tab!=="auction"); $("tab-setup").classList.toggle("hide",b.dataset.tab!=="setup");
+  if(b.dataset.tab==="setup") fillSetup(); window.scrollTo(0,0); });
+$("sync").onclick=()=>cloudPull();
+
+$("pName").addEventListener("input",onType);
+$("pName").addEventListener("keydown",e=>{
+  if((e.key==="Tab"&&!e.shiftKey)||e.key==="ArrowRight"&&$("pName").selectionStart===$("pName").value.length){ if(matches.length){ e.preventDefault(); accept(); } }
+  else if(e.key==="Enter"){ e.preventDefault(); if(matches.length) accept(); else $("pPrice").focus(); }
+  else if(e.key==="ArrowDown"&&matches.length){ e.preventDefault(); mIdx=(mIdx+1)%matches.length; drawGhost(); }
+  else if(e.key==="ArrowUp"&&matches.length){ e.preventDefault(); mIdx=(mIdx-1+matches.length)%matches.length; drawGhost(); }
+  else if(e.key==="Escape"){ clearBuy(); }
+});
+$("acceptBtn").onclick=accept;
+["pPrice","pTarget"].forEach(id=>{ $(id).addEventListener("input",updateBuy); $(id).addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); buy(); } }); });
+$("buyBtn").onclick=buy;
+$("roleBtns").onclick=e=>{ const b=e.target.closest("[data-role]"); if(!b) return; newRole=b.dataset.role; renderRoleBtns(); };
+$("goneBtn").onclick=()=>{ const n=$("pName").value.trim(); if(!n){ toast("Type the player's name first"); return; }
+  const name=sel?sel.name:n; if(ownedKeys().has(norm(name))){ toast("That player is in your squad"); return; }
+  if(!S.gone.some(g=>norm(g)===norm(name))) S.gone.push(name); clearBuy(); commit(); toast(name+" marked as gone"); };
+$("undoBtn").onclick=()=>{ if(!S.squad.length){ toast("Nothing to undo"); return; } const last=[...S.squad].sort((a,b)=>b.at-a.at)[0];
+  if(!confirm(`Remove ${last.name} (${fmt(last.price)}) from your squad?`)) return; S.squad=S.squad.filter(p=>p!==last); commit(); toast("Removed "+last.name); };
+$("sqFilters").onclick=e=>{ const b=e.target.closest("[data-f]"); if(!b) return; sqFilter=b.dataset.f; renderSquad(); };
+$("sqBody").onclick=e=>{
+  const d=e.target.closest("[data-del]"), ed=e.target.closest("[data-edit]");
+  if(d){ const p=S.squad.find(x=>x.id===d.dataset.del); if(p&&confirm(`Remove ${p.name} from your squad? ${fmt(p.price)} goes back into the kitty.`)){ S.squad=S.squad.filter(x=>x!==p); commit(); } }
+  if(ed){ const p=S.squad.find(x=>x.id===ed.dataset.edit); if(!p) return; const v=prompt(`Price paid for ${p.name}:`,p.price); if(v===null) return;
+    const n=num(v); if(n-num(p.price)>left()){ toast("Not enough kitty left"); return; } p.price=n; commit(); }
+};
+$("wList").onclick=e=>{ const w=e.target.closest("[data-pick]"); if(!w||w.classList.contains("got")) return;
+  const c=candidates().find(x=>norm(x.name)===norm(w.dataset.pick));
+  if(c){ selectPlayer(c,true); window.scrollTo({top:0,behavior:"smooth"}); }
+  else if(w.classList.contains("lost") && confirm("Un-mark "+w.dataset.pick+" as gone?")){ S.gone=S.gone.filter(g=>norm(g)!==norm(w.dataset.pick)); commit(); } };
+$("exportBtn").onclick=exportSquad;
+
+$("saveTeam").onclick=()=>{ S.team.name=$("sTeam").value.trim()||"My Team"; S.purse=num($("sPurse").value); S.squadSize=Math.round(num($("sSize").value)); S.minBid=num($("sMin").value);
+  if(spent()>S.purse) toast("Warning: you've already spent more than this kitty"); else toast("Saved"); commit(); };
+$("saveFixed").onclick=()=>{ document.querySelectorAll("[data-fx]").forEach(inp=>{ const f=S.fixed[+inp.dataset.fx]; f[inp.dataset.k]=inp.dataset.k==="price"?num(inp.value):inp.value.trim(); });
+  S.fixed.forEach(f=>{ const p=poolOf(f.name)||wishOf(f.name); f.role=p?p.role:f.role; });
+  commit(); toast("Fixed players saved — kitty updated"); };
+$("sLogo").onchange=e=>{ if(e.target.files[0]) onLogo(e.target.files[0]); e.target.value=""; };
+$("fPool").onchange=async e=>{ const f=e.target.files[0]; if(!f) return; try{ const list=mapRows(await readSheet(f)); if(!list.length) throw 0;
+  S.pool=list; commit(); fillSetup(); toast(list.length+" players loaded"); }catch(err){ toast("Couldn't read that file — check it has a Name column"); } e.target.value=""; };
+$("fWish").onchange=async e=>{ const f=e.target.files[0]; if(!f) return; try{ const list=mapRows(await readSheet(f)); if(!list.length) throw 0;
+  S.wish=list; commit(); fillSetup(); toast(list.length+" wish-list players loaded"); }catch(err){ toast("Couldn't read that file — check it has a Name column"); } e.target.value=""; };
+$("gSave").onclick=async ()=>{
+  const t=$("gTok").value.trim(), repo=$("gRepo").value.trim(); if(t) localStorage.setItem(LS_TOK,t); if(repo) localStorage.setItem(LS_REPO,repo);
+  if(!tok()){ toast("Paste the token first"); return; }
+  $("gInfo").textContent="Connecting…";
+  try{ await gh("/user"); gistId=null; await cloudPull();
+    if(repo){ try{ await writeSiteToken(tok(),repo); $("gInfo").innerHTML="✓ Connected. Other devices will sync after logging in (allow ~1 minute for GitHub to publish)."; }
+      catch(e){ $("gInfo").innerHTML="✓ Data syncing. Couldn't save the key to the site repo ("+esc(e.message.slice(0,60))+") — on other devices paste the token here once."; } }
+    else $("gInfo").innerHTML="✓ Connected on this device.";
+  }catch(e){ localStorage.removeItem(LS_TOK); $("gInfo").textContent="Token rejected by GitHub: "+e.message.slice(0,80); }
+};
+$("backupBtn").onclick=()=>{ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:"application/json"})); a.download="auction-backup-"+new Date().toISOString().slice(0,16).replace(/[:T]/g,"-")+".json"; a.click(); };
+$("restoreF").onchange=async e=>{ const f=e.target.files[0]; if(!f) return; try{ const d=JSON.parse(await f.text()); if(!d.v) throw 0; if(!confirm("Replace all current data with this backup?")) return; S=Object.assign(blank(),d); commit(); fillSetup(); toast("Backup restored"); }catch(err){ toast("Not a valid backup file"); } e.target.value=""; };
+$("resetGone").onclick=()=>{ if(confirm("Clear all players marked as bought by other teams?")){ S.gone=[]; commit(); toast("Cleared"); } };
+$("resetAll").onclick=()=>{ if(!confirm("Start a fresh auction? This clears your squad and bought-by-others list. Kitty, files, logo and fixed players stay.")) return; S.squad=[]; S.gone=[]; commit(); toast("Auction reset"); };
+
+/* auto-login within the same browser tab session */
+(async()=>{ let p=null; try{ p=sessionStorage.getItem(SS_PW); }catch(e){} if(p){ password=p; start(); } })();
+</script>
+</body>
+</html>
