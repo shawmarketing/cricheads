@@ -13,13 +13,16 @@
   --navy:#011649; --navy2:#0B2A6F; --red:#E22F0C; --red2:#C02408;
   --bg:#EEF1F7; --card:#FFFFFF; --ink:#0E1630; --muted:#5E6A85; --line:#D9DFEB;
   --under:#12823B; --underbg:#E3F5E9; --over:#D21F0A; --overbg:#FDE6E1;
-  --on:#1D5FD1; --onbg:#E1EBFC; --gold:#B7860B; --goldbg:#FFF3D6;
+  --on:#1D5FD1; --onbg:#E1EBFC; --gold:#B7860B; --goldbg:#FFF3D6; --amber:#8A5A00; --amberbg:#FFEFC7;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,sans-serif}
 button,input,select{font:inherit}
 .hide{display:none!important}
 h1,h2,h3,.cond{font-family:"Barlow Condensed",Inter,sans-serif;letter-spacing:.02em}
+/* privacy: anything .pv is hidden while the plan is locked */
+body.priv .pv{display:none!important}
+body:not(.priv) .pvoff{display:none!important}
 /* login */
 #login{min-height:100vh;display:grid;place-items:center;padding:16px;background:linear-gradient(115deg,var(--navy) 0 50%,var(--red) 50% 100%)}
 .loginbox{background:#fff;border-radius:18px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 20px 50px rgba(0,0,0,.3);text-align:center}
@@ -27,8 +30,8 @@ h1,h2,h3,.cond{font-family:"Barlow Condensed",Inter,sans-serif;letter-spacing:.0
 .loginbox h1{margin:8px 0 18px;color:var(--navy);font-size:28px;text-transform:uppercase}
 .field{display:block;text-align:left;margin-bottom:12px}
 .field>span{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
-input[type=text],input[type=password],input[type=number],input[type=search]{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);outline:none}
-input:focus{border-color:var(--navy2);box-shadow:0 0 0 3px rgba(11,42,111,.12)}
+input[type=text],input[type=password],input[type=number],input[type=search],select{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);outline:none}
+input:focus,select:focus{border-color:var(--navy2);box-shadow:0 0 0 3px rgba(11,42,111,.12)}
 .btn{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer;background:var(--navy);color:#fff}
 .btn:hover{background:var(--navy2)}
 .btn.red{background:var(--red)} .btn.red:hover{background:var(--red2)}
@@ -49,6 +52,8 @@ header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:20;box-sh
 .tabs button.on{background:var(--red);opacity:1}
 .sync{font-size:12px;padding:4px 8px;border-radius:20px;background:rgba(255,255,255,.12);white-space:nowrap;cursor:pointer}
 .sync.bad{background:var(--red)}
+.eye{font-size:12px;font-weight:700;padding:5px 10px;border-radius:20px;border:1.5px solid rgba(255,255,255,.35);background:transparent;color:#fff;cursor:pointer;white-space:nowrap}
+body:not(.priv) .eye{background:var(--gold);border-color:var(--gold)}
 .kitty{display:grid;grid-template-columns:repeat(6,1fr);max-width:1320px;margin:0 auto;padding:0 16px 10px;gap:8px}
 .k{background:rgba(255,255,255,.08);border-radius:10px;padding:6px 10px;min-width:0}
 .k b{display:block;font-family:"Barlow Condensed";font-size:24px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -57,7 +62,7 @@ header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:20;box-sh
 .bar{height:6px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;margin-top:4px}
 .bar i{display:block;height:100%;background:#fff}
 main{max-width:1320px;margin:0 auto;padding:16px}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;align-items:start}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:16px;align-items:start}
 .card{background:var(--card);border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(1,22,73,.08);border:1px solid var(--line)}
 .card h2{margin:0 0 12px;font-size:22px;text-transform:uppercase;color:var(--navy);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .card h2 .pill{font-family:Inter;font-size:12px;background:var(--bg);color:var(--muted);border-radius:20px;padding:2px 8px;letter-spacing:0;text-transform:none}
@@ -74,8 +79,8 @@ main{max-width:1320px;margin:0 auto;padding:16px}
 .accept{position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:2}
 .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:30px;margin:10px 0 4px;font-size:14px;color:var(--muted)}
 .tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
-.r-bat{background:#E1EBFC;color:#1D4FA8}.r-bowl{background:#FDE6E1;color:#B3260B}.r-ar{background:#EFE6FB;color:#6A2DB3}.r-wk{background:#FFF3D6;color:#8A6200}.r-x{background:#ECEFF4;color:#4A5570}
-.t-me{background:var(--red);color:#fff}.t-other{background:var(--navy);color:#fff}.t-unsold{background:var(--goldbg);color:#8A6200}.t-avail{background:#ECEFF4;color:#4A5570}
+.r-bat{background:#E1EBFC;color:#1D4FA8}.r-bowl{background:#FDE6E1;color:#B3260B}.r-ar{background:#EFE6FB;color:#6A2DB3}.r-wk{background:#FFF3D6;color:#8A6200}.r-own,.r-icon{background:#FFF3D6;color:#8A6200}.r-x,.r-base{background:#ECEFF4;color:#4A5570}
+.t-me{background:var(--red);color:#fff}.t-other{background:var(--navy);color:#fff}.t-unsold{background:var(--goldbg);color:#8A6200}
 .star{color:var(--gold);font-weight:700}
 .lbl{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 6px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
@@ -87,10 +92,19 @@ main{max-width:1320px;margin:0 auto;padding:16px}
 .chip.uns.on{background:var(--gold);border-color:var(--gold)}
 .chip.poor{opacity:.5}
 .row2{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:start;margin-top:12px}
+body.priv .row2{grid-template-columns:1fr auto}
 .price input{font-size:20px;font-weight:700}
 .prev{font-size:12px;color:var(--muted);min-height:16px;margin-top:3px}
 .verdict{border-radius:10px;padding:10px 12px;font-weight:700;margin-top:10px;font-size:15px}
-.v-under{background:var(--underbg);color:var(--under)} .v-over{background:var(--overbg);color:var(--over)} .v-on{background:var(--onbg);color:var(--on)} .v-none{background:var(--bg);color:var(--muted)}
+.verdict small{display:block;font-weight:500;font-size:13px;margin-top:2px}
+.v-under{background:var(--underbg);color:var(--under)} .v-over{background:var(--overbg);color:var(--over)} .v-on{background:var(--onbg);color:var(--on)} .v-none{background:var(--bg);color:var(--muted)} .v-amber{background:var(--amberbg);color:var(--amber)}
+.guide{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.guide div{border-radius:8px;padding:6px 8px;background:var(--bg);min-width:0}
+.guide div span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+.guide div b{font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap}
+.guide .g1{background:var(--underbg)}.guide .g1 b{color:var(--under)}
+.guide .g2{background:var(--amberbg)}.guide .g2 b{color:var(--amber)}
+.guide .g3{background:var(--overbg)}.guide .g3 b{color:var(--over)}
 .warn{background:var(--goldbg);color:#7A5600;border-radius:10px;padding:8px 12px;font-size:13px;margin-top:8px}
 .warn.bad{background:var(--overbg);color:var(--over)}
 .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:13px;align-items:center}
@@ -136,6 +150,9 @@ tr.fixed td{background:#F6F8FC}
 .stabs button{flex:1;border:0;background:transparent;border-radius:8px;padding:7px;font-weight:700;cursor:pointer;color:var(--muted);font-family:"Barlow Condensed";font-size:17px;text-transform:uppercase;letter-spacing:.03em}
 .stabs button.on{background:#fff;color:var(--navy);box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .side .list{overflow:auto;margin:0 -16px;padding:0 16px;flex:1}
+.lock{text-align:center;padding:30px 10px;color:var(--muted)}
+.lock .big{font-size:40px;line-height:1}
+.lock p{margin:8px 0 14px;font-size:14px}
 .wi{display:flex;gap:8px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--line);cursor:pointer}
 .wi:hover{background:#F6F8FC}
 .wi .nm{flex:1;min-width:0}
@@ -151,20 +168,54 @@ tr.fixed td{background:#F6F8FC}
 .wi.lost .tick{background:var(--over);border-color:var(--over);color:#fff}
 .wi.uns .tick{background:var(--gold);border-color:var(--gold);color:#fff}
 .wi.cur{outline:2px solid var(--red);outline-offset:-2px;border-radius:6px}
-.wsum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
-.wsum div{background:var(--bg);border-radius:8px;padding:6px 8px;text-align:center;min-width:0}
-.wsum b{display:block;font-family:"Barlow Condensed";font-size:20px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wsum span{font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
 .filters button{border:1px solid var(--line);background:#fff;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer}
 .filters button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+/* plan */
+.psum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.psum div{background:var(--bg);border-radius:8px;padding:6px 8px;text-align:center;min-width:0}
+.psum b{display:block;font-family:"Barlow Condensed";font-size:19px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.psum span{font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}
+.psum .bad b{color:var(--over)}
+.pcat{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.pch{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#F6F8FC;border-bottom:1px solid var(--line)}
+.pch b{font-family:"Barlow Condensed";font-size:18px;text-transform:uppercase;color:var(--navy);letter-spacing:.03em}
+.pch .cnt{margin-left:auto;font-weight:700;font-size:13px;border-radius:20px;padding:2px 8px;background:#fff;border:1px solid var(--line)}
+.pch .cnt.done{background:var(--under);color:#fff;border-color:var(--under)}
+.pmoney{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:8px 10px 0;font-size:12px;color:var(--muted)}
+.pmoney b{display:block;color:var(--ink);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pmoney .neg b{color:var(--over)}
+.pnext{margin:8px 10px 0;font-size:12px;background:var(--underbg);color:var(--under);border-radius:8px;padding:6px 8px;font-weight:600}
+.pnext b{white-space:nowrap}
+.pnext .amb{color:var(--amber)}
+.pbody{padding:6px 10px 10px}
+.pick{padding:7px 0;border-bottom:1px dashed var(--line)}
+.pick:last-child{border-bottom:0}
+.plbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;display:flex;gap:6px;align-items:center}
+.opts{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.opt{border:1px solid var(--line);border-radius:7px;padding:3px 7px;font-size:13px;font-weight:600;background:#fff;cursor:pointer;color:var(--ink)}
+.opt i{font-style:normal;color:var(--muted);font-weight:700;margin-right:3px;font-size:11px}
+.opt.next{border-color:var(--red);box-shadow:0 0 0 2px rgba(226,47,12,.15)}
+.opt.got{background:var(--under);border-color:var(--under);color:#fff}.opt.got i{color:#CFEBD8}
+.opt.gone{text-decoration:line-through;color:#9AA3B8;background:#F4F5F8;cursor:default}
+.opt.uns{background:var(--goldbg);border-color:#EBD48F}
+.opt.bad{border-style:dashed;color:var(--over)}
+.arrow{color:#B5BDCF;font-size:12px}
+.pstat{font-size:12px;margin-top:4px;color:var(--muted)}
+.pstat b{color:var(--ink)}
+.pstat.okk{color:var(--under)}
+.pstat.alrt{color:var(--over);font-weight:600}
+.retl{font-size:12px;color:var(--muted);padding:6px 0 2px}
 /* setup */
 .setup{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .span2{grid-column:1/-1}
 .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.fixedrow{display:grid;grid-template-columns:110px 1fr 130px;gap:8px;align-items:center;margin-bottom:8px}
+.fixedrow{display:grid;grid-template-columns:90px 1fr 110px 120px;gap:8px;align-items:center;margin-bottom:8px}
 .trow{display:grid;grid-template-columns:1.1fr .8fr .9fr 2fr 30px;gap:8px;align-items:center;margin-bottom:8px}
-.trow input,.fixedrow input{padding:9px 10px}
+.crow{display:grid;grid-template-columns:1.2fr .5fr 1fr;gap:8px;align-items:center;margin-bottom:8px}
+.prow{display:grid;grid-template-columns:120px 1fr 1fr 1fr 30px;gap:8px;align-items:center;margin-bottom:8px}
+.trow input,.fixedrow input,.fixedrow select,.crow input,.prow input,.prow select{padding:9px 10px}
+.prow input.badn{border-color:var(--over);background:#FFF7F5}
 .thdr{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .drop{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;cursor:pointer;color:var(--muted);font-size:14px;display:block}
 .drop:hover{border-color:var(--navy2);color:var(--navy)}
@@ -181,10 +232,11 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
   .leftcol{display:contents}
   .grid{display:flex;flex-direction:column;align-items:stretch}
   .buy{order:1}.side{order:2;position:static;max-height:none}.teamscard{order:3;margin-top:0}.logcard{order:4;margin-top:0}.squadcard{order:5;margin-top:0}
-  .side .list{max-height:440px}
+  .side .list{max-height:560px}
   .kitty{grid-template-columns:repeat(3,1fr)}
   .trow{grid-template-columns:1fr 1fr;padding-bottom:10px;border-bottom:1px solid var(--line)}
   .trow .pl{grid-column:1/-1}.thdrrow{display:none!important}
+  .prow{grid-template-columns:1fr 1fr;padding-bottom:10px;border-bottom:1px solid var(--line)}
 }
 @media (max-width:560px){
   header{position:static}
@@ -193,19 +245,21 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
   .tabs{order:3;width:100%}.tabs button{flex:1}
   .kitty{padding:0 12px 8px;gap:6px}.k{padding:5px 7px}.k b{font-size:18px}.k span{font-size:9px}
   main{padding:12px}
-  .row2{grid-template-columns:1fr 1fr}.row2 .btn{grid-column:1/-1}
+  .row2,body.priv .row2{grid-template-columns:1fr 1fr}.row2 .btn{grid-column:1/-1}
+  body.priv .row2 .price{grid-column:1/-1}
   .three{grid-template-columns:1fr}
-  .fixedrow{grid-template-columns:1fr 1fr}.fixedrow input:first-child{grid-column:1/-1}
+  .fixedrow{grid-template-columns:1fr 1fr}
   .hidem{display:none}
   td,th{padding:8px 4px}
   .thead{grid-template-columns:minmax(0,1.3fr) 1fr .9fr 16px;gap:6px;padding:10px}
   .thead .hm{display:none}
+  .guide b{font-size:13px}
   .mkitty{display:flex;justify-content:space-between;gap:8px;margin-top:10px;background:var(--navy);color:#fff;border-radius:10px;padding:8px 12px;font-size:13px;position:sticky;top:6px;z-index:5}
   .mkitty b{font-family:"Barlow Condensed";font-size:18px}
 }
 </style>
 </head>
-<body>
+<body class="priv">
 
 <section id="login">
   <form class="loginbox" id="loginForm" autocomplete="on">
@@ -225,6 +279,7 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
     <img id="hLogo" src="data:image/png;base64,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" alt="">
     <div><h1 id="hTeam">Cricheads</h1><div class="sub" id="hSub">Auction Desk</div></div>
     <div class="grow"></div>
+    <button class="eye" id="eyeBtn" type="button">🔒 Plan hidden</button>
     <div class="sync" id="sync" title="Tap to refresh from cloud">—</div>
     <nav class="tabs"><button data-tab="auction" class="on">Auction</button><button data-tab="setup">Setup</button><button id="logout">Log out</button></nav>
   </div>
@@ -251,13 +306,18 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
     <div class="meta" id="pMeta"></div>
     <div class="lbl">Sold to</div>
     <div class="chips" id="teamChips"></div>
+    <div id="catBox" class="hide">
+      <div class="lbl">Counts in my plan as</div>
+      <div class="chips" id="catChips"></div>
+    </div>
     <div class="row2" id="priceRow">
       <label class="field price" style="margin:0"><span>Sold for (₹)</span><input type="text" id="pPrice" inputmode="decimal" placeholder="e.g. 2500000 or 25L"><div class="prev" id="pPrev"></div></label>
-      <label class="field" style="margin:0"><span>My target (₹)</span><input type="text" id="pTarget" inputmode="decimal" placeholder="—"><div class="prev" id="tPrev"></div></label>
+      <label class="field pv" style="margin:0"><span>My target (₹)</span><input type="text" id="pTarget" inputmode="decimal" placeholder="—"><div class="prev" id="tPrev"></div></label>
       <button class="btn red" id="buyBtn" style="height:48px;padding:0 22px;margin-top:18px">Confirm</button>
     </div>
+    <div class="pv" id="guide"></div>
     <div class="mkitty" id="mKitty"></div>
-    <div id="verdict"></div>
+    <div class="pv" id="verdict"></div>
     <div id="buyWarn"></div>
     <div class="links"><button class="link" id="undoBtn" type="button">Undo last entry</button><button class="link" id="clearBtn" type="button">Clear</button></div>
    </div>
@@ -270,15 +330,15 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
    <div class="card mt logcard">
     <h2>Auction log <span class="pill" id="logCount">0</span></h2>
     <div style="overflow-x:auto;max-height:420px;overflow-y:auto"><table>
-      <thead><tr><th>#</th><th>Player</th><th>Team</th><th class="n">Price</th><th class="n hidem">vs my target</th><th></th></tr></thead>
+      <thead><tr><th>#</th><th>Player</th><th>Team</th><th class="n">Price</th><th class="n hidem pv">vs plan</th><th></th></tr></thead>
       <tbody id="logBody"></tbody>
     </table></div>
    </div>
 
    <div class="card mt squadcard">
-    <h2>My squad <span class="pill" id="sqCount">0</span><span class="right" id="sqVs"></span></h2>
+    <h2>My squad <span class="pill" id="sqCount">0</span></h2>
     <div style="overflow-x:auto"><table>
-      <thead><tr><th>#</th><th>Player</th><th class="n hidem">Base</th><th class="n hidem">Target</th><th class="n">Bought</th><th class="n">vs target</th></tr></thead>
+      <thead><tr><th>#</th><th>Player</th><th>Plays as</th><th class="n hidem">Base</th><th class="n">Bought</th></tr></thead>
       <tbody id="sqBody"></tbody>
     </table></div>
     <div class="links"><button class="link" id="exportBtn">Download full auction (Excel)</button></div>
@@ -286,18 +346,11 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
   </div>
 
   <aside class="card side">
-    <div class="stabs"><button data-st="wish" class="on">Wish list <span id="wCount"></span></button><button data-st="all">All players</button></div>
-    <div id="st-wish">
-      <div class="wsum">
-        <div><b id="wGot">0</b><span>Got</span></div>
-        <div><b id="wLost">0</b><span>Lost</span></div>
-        <div><b id="wNeed">0</b><span>Targets left</span></div>
-      </div>
-      <div id="wWarn"></div>
-    </div>
+    <div class="stabs"><button data-st="plan" class="on">My plan</button><button data-st="all">All players</button></div>
     <div id="st-all" class="hide">
       <input type="search" id="aSearch" placeholder="Search players…">
       <div class="filters" id="aFilters"></div>
+      <div class="filters" id="rFilters"></div>
     </div>
     <div class="list" id="sList"></div>
   </aside>
@@ -314,16 +367,32 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
       <label class="field"><span>Squad size</span><input type="number" id="sSize" inputmode="numeric" min="0" placeholder="optional"></label>
       <label class="field"><span>Min bid (₹)</span><input type="text" id="sMin" inputmode="decimal" placeholder="optional"></label>
     </div>
-    <p class="note">Squad size is the total players per team, retained players included. With squad size and the minimum bid filled in, the app shows the most each team can bid on the next player and still fill its squad.</p>
+    <p class="note">Squad size is the total players per team, retained players included. Min bid is the lowest a player can go for. The app uses both to work out the most each team can bid and still fill its squad, and how much to keep back for your open plan slots.</p>
     <div class="logoprev"><img id="sLogoPrev" src="data:image/png;base64,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" alt=""><label class="drop" style="flex:1">Change logo<input type="file" id="sLogo" accept="image/*"></label></div>
     <button class="btn mt" id="saveTeam">Save</button>
   </div>
 
   <div class="card">
     <h2>My retained players</h2>
-    <p class="note">Pre-signed players with their price, which is taken off your kitty straight away.</p>
+    <p class="note">Already signed. Their price comes off the kitty straight away. "Plays as" puts them in the right group in your plan; they don't use a plan slot.</p>
     <div id="fixedRows"></div>
     <button class="btn" id="saveFixed">Save retained players</button>
+  </div>
+
+  <div class="card span2">
+    <h2>My plan (private)</h2>
+    <p class="note">The budget per group can be split any way between its players. Buffer is how far one pick may go over plan. Any overspend is taken first from groups that came in under budget and from Base category money, then trimmed evenly from the groups still open.</p>
+    <div class="crow"><span class="thdr">Group</span><span class="thdr">Slots</span><span class="thdr">Budget (₹)</span></div>
+    <div id="catRows"></div>
+    <div class="crow"><b style="font-size:14px">Buffer per pick</b><span></span><input type="text" id="sBuffer" inputmode="decimal"></div>
+    <div id="catTotal" class="note"></div>
+    <div class="lbl" style="margin-top:16px">Picks — 1st choice, then back-ups in order</div>
+    <div id="pickRows"></div>
+    <div class="links" style="margin-bottom:10px"><button class="link" id="addPick">+ Add pick</button></div>
+    <div id="planWarn"></div>
+    <div class="links"><button class="btn" id="savePlan">Save plan</button>
+      <label class="btn ghost sm" style="display:inline-block">Upload wish list file<input type="file" id="fWish" accept=".xlsx,.xls,.csv" class="hide"></label></div>
+    <p class="note">Wish list file layout: columns <code>1st choice</code>, <code>2nd</code>, <code>3rd</code>, <code>Category</code>. Rows reading "Base Category" become Base slots, and short names are matched to the player list. Uploading replaces the picks. Anything the app can't match is shown in red for you to fix.</p>
   </div>
 
   <div class="card span2">
@@ -337,16 +406,9 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
 
   <div class="card">
     <h2>Player file</h2>
-    <p class="note">Excel or CSV with <code>Name</code>, <code>Base Price</code> and <code>Target Price</code>. A Role column is optional. If a player has no target price, they count as not on your list. Uploading a new version replaces the list, and every sale already recorded is kept.</p>
+    <p class="note">Excel or CSV with <code>Name</code>, <code>Base Price</code>, <code>Target Price</code> and <code>Category</code>. Uploading a new version replaces the list without creating duplicates, and every sale already recorded is kept.</p>
     <label class="drop">Upload player file (.xlsx / .csv)<input type="file" id="fPool" accept=".xlsx,.xls,.csv"></label>
     <div id="poolInfo"></div>
-  </div>
-
-  <div class="card">
-    <h2>Wish list file (optional)</h2>
-    <p class="note">Excel or CSV with <code>Name</code> and <code>Target</code>. These players appear first on the wish list, in the file's order, and their targets override the player file. Players with a target in the player file are added automatically.</p>
-    <label class="drop">Upload wish list (.xlsx / .csv)<input type="file" id="fWish" accept=".xlsx,.xls,.csv"></label>
-    <div id="wishInfo"></div>
   </div>
 
   <div class="card">
@@ -360,7 +422,7 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
 
   <div class="card">
     <h2>Logins</h2>
-    <p class="note">Extra logins see only the Auction screen, with the same live data, and can record sales the same way. They cannot see or open Setup.</p>
+    <p class="note">Extra logins see only the Auction screen, with the same live data, and can record sales the same way. They cannot see or open Setup. They can open your plan with the 🔒 button, so only add people you'd share it with.</p>
     <div id="userList" class="note"></div>
     <div class="three">
       <label class="field"><span>Username</span><input type="text" id="nuName" autocapitalize="off" autocomplete="off" placeholder="e.g. rahul"></label>
@@ -372,7 +434,7 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
 
   <div class="card">
     <h2>Data</h2>
-    <p class="note">Backup / restore everything as a file. <b>Reset auction</b> clears every recorded sale and unsold mark. Teams, kitties, retained players and files stay.</p>
+    <p class="note">Backup / restore everything as a file. <b>Reset auction</b> clears every recorded sale and unsold mark. Teams, kitties, plan, retained players and the player file stay.</p>
     <div class="links" style="margin-top:0">
       <button class="btn ghost sm" id="backupBtn">Download backup</button>
       <label class="btn ghost sm" style="display:inline-block">Restore backup<input type="file" id="restoreF" accept=".json" class="hide"></label>
@@ -389,14 +451,17 @@ code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
 const LOGO_URI="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAADwCAMAAACuVq9bAAAAwFBMVEXoa13voZfm2t0tN1+Kjqbv7++bnJ9ZYoXlSzJ0dXfhKxc6Q2jY0tF7g57thnj0w7vh3+CgIhy5usRcHCuprsC9wc7NvLt4eJrTx70uGTe6w8mbepszM2ZbYHvKu8Y/Pz94lpahcnJDME++TU6Fa4H7+/sBFUcAAADhLArdIw3iMAsACzn////s6OvbGwjHydUEET3ztasADUHx8fLTxsWztsalqbpPVngZJU+Sl65kaYkiKlJvdpRES2/31tHZ2+PeEbpzAAAAQHRSTlP9/fH9/Z0K/f0G/f0g/f39Xf0b/f39Ggcb/RsHBf0WBAgF/f7+/f0A/f39/QH8/f39/f3IGv39/f39/f39/f39M3Mx/QAAGNlJREFUeNrtnQl34jqWgL0lpiCQpJJU13vd/aZ7pnG8RFg4scFg4P//q9FqS7bkBUwqfU7p1MJi4ONydTddy8brf9UwfuP+xu2Ne4vH9+/o75/fhfGBH/z+5wcZ+Kk/v3/8+fG9POj2+8fHX+TJH/zvj58/8CAP/vxBH6SDPYie/PcluB8PNzfW+xKAJRsA/2F335eaAchRZw3Lunm4+3EW7u3DzfKXjPebu8G4tw/vy183tMAa3F8KS4B/9se9rdQAWOlzlmX4b/b8jP48p2mK/5KH6TPP+AF2F41UHOZ6wLg/WpUaP7y+vvXCveMvsvKNvfUuGBA++n1GwP4Pw8ningM/9JPuHVOEdONdPP4I/L4jDEPEjY6frPW8ho725HojjKdQ4KFI5A8bFFPAJby+ca/jbeB+UE1It8kYuI+S8ARQcbCnK24/NDW8ddxvdJbl3jjjUaAlPGpe9m/1M/gGNcEfHbgPo9LagS/ztg1JbRjvzbdW3FuiCulItN6TiNADV0D2TZU6GArhnvbe2LpASdRKUOFKIvaJgbi5bcGlwnWjkWhhIBuqHvogAE9AU7xGU7jxWLL1/hhIS3hr6nDTgkvMgutdQXX74oraQMRr/dDifsce4rT1rqC6PaZaw0BQ7X3Q4t7hp53RaL0gHAwr+TijDfeNqq4LR1NdSVS+YAt8P9R9AfSUsV5PSOAzaSivhEtU1x4N90k2/XUV1cEecdxq4OAhxDetf2uU4R8YF1xHdf3KFXCHUJevX8JiyEmAwh1sV99vNbj/ws9a11DdCpcFNDw4qzk1DouGiaMzMtc+NLi376Na3aem6lamtam6aGYdxXwaqS/Fvft03FCQbqi0wlWQy4fBLRmS7tvb9XEfJZvPSUOF1qKHJmY9uTSDClctXWtM3FrewxxWPZ9gMjebdRTL78IdVbpPjWSMma+GaENJafk4hh24fxsV97FJGwpaLOjBvbLSsOZBzs9Pka4KNwybDsNU10WIYyPS/fEZuttM2auAS3DGSj1AimsEZYzzKdJ9UhcSWADOrG9ZUqiprREKIdmnTLVHFW4pYIqzUNZVrUWZB42CG+HR6YEVuCwoY55YLVpgTquyQyvu3/vgJp7tznOn2Gyj7rwnVAmYTTkDaGdYqTqtuN+6cRNvF7M3PuX7qFV1A0mwHJ45YrVo14b89S61u5tYePO2MtqjnLCLjg0PpUG4NwT595hqnYZsV/sAp4fqVmFj9ZCptF1CsYx9s4sMWbRrfMa8PWWnIXco2lxf7cao7Qpr4r3EMkBbMTkOSb+UXbivmGPHRchtcVWTvFQZUsVPGPfOe0qL0LRdCyl1E2q+rU747624cKP0QI5t21vYp9rEcmGzYWgnVRzhV7WyTum2290o1y77nYo2DyzLLLxvwsr5RZnkd4U47bpr6ZeV6riPYSNWmJj3x+PaqE0zc6KqSfmXO2HlRKMCcuyOgEEXJpYuzPfVtd4LcGdq2FNuN4vmU79WCtd5hZaKX6ch+zYY9+S42471Ho3pQrCs9FSvQ1Q2xA8uwLWbct1w1qiuC4Ho1Yx6gDhZo+AgEAwWy5MbuOb5Ic5WFlF82CbERUT7IptrA4bQsCxFEiaFPr5kyESP3WoZOiIy2UucttuNO8/idGsXKdhEirwnCAJDYU5QfaZMK8Iqn6/sbtgvImvHTQqBNUuXrsPWYvPd1s0jyepSXQiCcKGanYbfXPlTF6Rbcf/RLt3SksWbfb5bvmD8OMtcPA2fYU11EfBksQZrVVg7CSTvobJiIu7PM8Nz6tas3daegxO6EadW+rLcIA2201rwGE5Mqga8PHM0F5x8IdWnhRsDpduFi8VrFa5X8GA3JUuG0dZNhTJr9MfEMEs7C5gXO1rHxaKszrSuu46juziXmLteVJwYSRY5ae7aLvq3KKUbeYdMMiHrYyliKl9TNrV+51rK+ZlwlNh5Pp+/4Nn2/DKzC8dJXZRkznLIYN24bgfWS8PgIXjdjCkXtcfDJZEDmNvOKXbtbJnOiznO1yKHZm2RnSqyxYmxrHCtsBG3d+HenZ8Je1GGjnm2N2mc5ktne3BsNNPc1IMechpu09maYRWPm+vlceJLjQCty2qXZ8JJNAfOvJghPLhNYyvNnRz1CtmRh3W4abMWbPmGRAnIrk18cWVdu+wejjLVPA85MBSOo4A8dRGxZ292GLfYPSuDYYALczwaO07CScP5+srGEXlV+GxlgLnQr4WEGsfxCej7B48T7IaFpZFacU/j0Oq45yuDNaRzbR0GwcoQAhs5sdEEutJ3uQwXZuoIXfkodl6VbHHiIOU1fqheuZRwWy1DJ250UIKlypoMzigWwqKeXCyr+V2NdbhwqkWpMldrPkbxFtIimbyo0tL3NJbdhXuV8oKGuV1PVr4vFkCOoWwNqrC2B+7Z0o3mSmWQypJITQ1/hSbZypD1WFzB9DWR7rghjhcrcd1KG+KM6KxxXJtC9gumylJ6s7xQa8bp8GodNTJdqSGjaZz1XNje0xRJNjyqNDkUqr2h5IN9sRgi4F624h5pSg3A3oF0fiBdkyirDFZmIzmrqW1t/ZILe1jM0FWB1NgxHKhvcZCeo9Je4DdrjKa66i9nDxy42al3rmXQFXKWYJPMUDCxnEckCdYJVy5Nh2L6W3mNJu65U02pu+DF2disPAlslASvAqvp3upLraFU9pVCX38sNwHrMQOIHVrI4bYhR6q7MupVkECoKgizqhGeNwvtl2UTURUzAJSgoayHlhds0WJNzVpYJphb4ff3632bqnWBC3FdoeiUo8wnT9Pt1vVmpZKYq8CXKrjWRLHsruwy9XVe7ef5TrihvG6UZYKBs5B40bkH1hHQOBjJNhjcCFkRX+jVYL3g/+I5Syf651Lupwr8cDqZTAzDUK6y9m+DvDA8b9iGGYoiHHHVAoStJxvwziF/BNweiXttPSXPSaO6GEqQmCEIAs25EcLKsN/dFWtemFrK2gtIHrGTHjtSZQ3apBu2tpyO5SY0C62zotGu1sSUokdNu2azP/risojnPTcCHDmsvFeLtqpA63DLRqixwnMy9rVM8qW+mmkEgX6q+a3dsPWlefNy3KiGl6f6AMxXpWjqGvS1cD1PTiUba6+K3MFvrpioM/ZwQLdIX1wva1gHfQjW1N/W6tg1cLdxa/nmGGpPSWuZaKoXjNRHZrefWGsELafQhdo6dNjojhqpITY6tPKufb1XE6Lw1nM8xptqam/RXIrSubVQe6rdtXA9OBfOzCahYx9bFlYtkL5kE3w18Hj9uzyWBM8Ke6azZVVuJlo0XyvdMVs2KafzQgGLHrasbMXUnJeitgzj9O/CLT7cYflQJuMe9dIN5Q7Obty/xmk3TjZ4zZK5YDfvYcukIr/fsBAD7e7Q3vPEiT2XtwvUPMc6wIFZ0MIr9ESq6k0jerXSW2y3J95NVjfExirQzTVNlqF4whwVt8yFwH6n6cDse8K4P1y6w1vleY0vF1cBrDRma6r+EOCr667nvXDhzvhyW1a481KN7ydDgP0r625ZkSwSLNyX+WzrzZyTsguv5w4CV3QTHi+HxLBYgtxOEruI1d2j54r3sqKTJs5xZ7iv8JCro+C+GnF9Q0aV4cV28jxtWX81w57SDa+L65GwLO7cBMcyztSGkXE9VytUcFRGlC1J/dCpdsYJYEmulaip1eCA/xv0mmo63P8Z7tU2eoWtL6gYFaK64nd9XE+fEhumalk7aMG9tpuQ2iIbtZFmO+F6WnH2I+YlvZHOZI1bkuGjstuFz7ZwMunmDaoTb98uD3HgoaXU4ANlLxFT08WxvN2Ga5bJz9sITtjRF3L8ie5r4C5/qyVBauD+HMmQwVSLu1gZ+grP5NjofWrDHW2qxfqJNl3r7HFYLrwteuvuGLhwe9Ia3WkItHJfKJrQzzFkA6daC+5EqwvHYAp6FIL7rE0MNmSWVrgrU6e6q0X7qsv1wnOe+zSFO50CnVIHgj02V75+UWv8bCLXCXeq04X76URegws+T7riArysub5WTWSl5p4taMP9OVLirul8ahEuUl1JqRdB0KIK4xoyTfgIpo32FhF3Xd8y4mzcv42iuybqzzsCLa6lO//n6m7CU9ld3IARBFNjsT4qcRUbnnwOrloXUIMAboBcraa+eLqHWhm6TO+ouCpdsDBpwAa6NTHWQNKUmv+4b7VlI+KqffD/ibgEGSnGvZBQmM0F70BILYJr4Sp1IXucSrCU2DfWpSkwmwGwxHs1XEUjuvW/TVgKzDY4ANOJ1G4C1j7DDWpbmhKDPB6uUhfcJz9QjxVT2mquAdTiu7DMKT+CQfKsM+jcgmoQrkoXnqNHHS4/JcGkHs8yDWo3juULKtlidEwfBCM0t+h1AeyjQD9Ci2zUtMLau16Y3CxPKKqMSx8IRiyYKuIFN3oK2ngXpoHMBm+YXVs8A2KiDBrb8Y6nu4o17IyfZanVB2zjjPVkws5YYitaTJiCLSsDn/Gk28iCT1sIg45BLNpieqR7B/CAvaG7pXjH0l1F7IhOFX7yO3CJFTsybWCnNBpNQ1YW/8ZSBlIRAXFeuGgUDqpIOxHs0AWkDdToGhN+th3roVXjjqS76FS6Lep2Os3RFoxbtPcF2oXIs4st3vOiY6xoCmfSfI1VgO8blmzUiCxCJ6GcbG9jz+aphfe7t2J0bj4+CeGpC5cl7YAGDsCQlTfQKMPdeWdhiyYhrZ2yesLnXHbpAho02GGnti6OfPU4YK6hZsguLzpFLCZveGBQwFUnLfPE91Nic9empLxBUK/6rsyLzldDsBt9GQ95rE5clnPSfQmP9J4lWjomZRo7rC471xKdzCHKs5nZdIqXVRkWFJSexcSUV9QkFqWtLumOhlA+/6ux8rfoxmXVxyMzEWvN12SebXWB7kIvl+UKClm+90EP5TXEhRZrUSov9b2CdP1LpVuGYDlbQYmLgaqLB7UGpkFNGeC1p6AMxrhJK3HP2zGL04JdebJiXmlHvOlhxirxHql/Y5s4TOq4THs7pKsvOsHyjIkYt5rz0qPDVyccGAX9Bs8q1oIpI8or416kDLBcNcnsnJyjyDHngHyFKHrqi0vjsfWCrm3TILLE9RVfbbh0I66lBeuLL3sXst0JFHhfnMdpX15RbakpO7IMwlf+EsNxmSacDlxtgXsqu6ORaCGEq764Aa2f0+KDKWpDoMYdVuyHEZ9l6b4oJ1ZRcKtL9umAT37Qf9yXastM2YLh+kNw1XYX8uWzfM81Nj+ky1NBHk4P4uYyA9SBxWNUJ0rlHaS7SlyelRUbJk/Lpf4hzdM49yLItncbIF2CsbAqUwamlecVjxtU7IdYKdm2MtaG29jc5rph4/1BIRysCzTupdpwXymvrzF6PZ1whE6n5Z43PaR8q0o2yeKN19hoqPfAy/FgISSY5hm4knQjO49PJ7bdVc4NQebSJmMwFzf1gnAVDBt4stHiL9UGq8Wl9Ih3odi7D+bMSVg7hu3Y0hax8GkgLplsNFdb39PlbD1uH2XYWkJi88KvU+QwPUiS+s6EA3HxYguNzo+mPlburwxVwc7KWbw4p6YWObH6zprwcaAuUPHSXK2eATVwe2yfVnrdpfXCo8WUBQ2RYp/owQNPNmobaG3vqFeGn90bHpS4wOKxF1DrwTm6wEioVWBX/VJpQ++YobZ+eqInpYG56lJQcLguMG2gZaejVht66668FYOVAqoHyu1g4Rm6QLWBChZ04PbJJsSSHVWIeBMluo2Xz8AlKGvx7PLVBbj1nivZL9Tswlm42KmJi7FoA6hpLcbprwy1JT6VPbjALmDLe1T3zYr60hdXWtZJXbQbYdK2CfcZtCtln5k5oSX2YFhZRGpom3Vsyv54Fq665QGvXhmTqZS4d+OKG4CmUfuVdCDZs2cw7qKlmxqYg6QrWd2u64FhXVidZxhaWihX/XGhtBnSvKOpAenCaqh0V6sO3Hu/t1eDMJKqSbv2K1ci1NWqNzA9btXS/1KeXNpfd6V1nefWazCiXZHYqDPJt6qVNXpj3UYLSDLk81yt7DZu4gJypb2NwFtErbowrdNScXM8GbU8ciXseFzfjg9tDUdpqW2+a8NFOx7hy0lsi5xeVDXbRa1jVUqXjtpd/ZgaJto0xTQXqB1mahjm+t6y7tfYkKEvNSVvQ/Vbd1mif9Hrhb4UOzRcd0eGu2E3qgfxWhr//z/G9QbTlw/hWrJN6X658Rv3muPuN+51cV9/4/5SXLRzMR50I+jM4YMmmRa+SQuRqSMcl+PHAXkUjRd0BiZ/3Zxl/oDepX6s/rbY6OO32xWpbBn0NTKWqW8g81pkf+VZlETi/RzfwsmydUD7SaNBHweodJYkeNlih18wR5dxxA/QF9K174w+kLIGk0h6W7SG4LH7h9MQ3ENEyrtoh+UIn8yBL+CC3wTiMmq8JK0heN9CUKZw6FgUY5G7FJeEoWBfhkcJDfkdipuXoTTnJX33bpTwb1dFWa3FfrZHOLsWFarZ4Oo5oocwYZcU2ODn0Xc5YCnjknVEP3Mn4aLh4M4y/B7oTZLIYxf/5cdK0oWksvHiwYT9jrBKbu/arpVSBWHkqyOxoO85o0VyjwgZpZ0c18X/cxGh40jdpI4bicowQ98tQUv3Ai6E5GdDr0M/Gvpu2y356E3/qbbBv+UutjKSuJ1wdonq6DFeikC34hL3QCQVxxn+IujXttHjkOJCyHEhi+2Icm6R9JCwaT12g6U4f0lzvA81avsjX3IHQCbVkfrgok9L6QVaI4hxE0ikZpe4SYlLjuO4aDDd9Tiu2PMdc11N6cckkDQnkhsOxiX38Qztwn2rSReyqY5xD0wn8dSCFJdMNTIF6XEwIrgely7H9STcDAl3i5FzNtU4LtEd8ip0/+QNxqVnoyFcaFsEC8bcEgi4EdvxGEkRbwQn6G6Jm4i4BfpamxmfaxwP/0qYu0hoqRbg3cnjM3AztHZ2IpURCF+W5dSvcNnvigw9Ps7GU1IyZMgwiEUL/IICCZXONRerMZMuvuGQmZf38mp13EjY1o2pLOWpT7WX2nF4ZpFfl+AiK+agB5yYtsyir+nMERv5Dhumq/zzUqrX7ukc3FSuO8Hn0wlN4aiGC2VcbO2opaeWIeEPkI1DTzgbfcn4l69wE6rEB2IWk22+7HTCSmUQnFzpvpCOZthyEFxmQfjXSvC2/nxQXHKf2SUCeoojNtfcSrrURFg280+b01DpSrgJdXK4DIJnCfZ6Klw81SAVbeSJuGyiz3GODdDEp4sfuwoXjYys5UbU3+/jYbiy1DAoX808teBGwnUkmWXgPo+7MRvZF3S5hwN3JhIu3gSzX8zQwM1k3aUQyexEIrLSMtRw0THzPM9noptwsiyjV3fAdnlH3j7Be126lZsocdH1jqhfdwbi4uNPJ1Di7gpkpZIN3ViGezUmXcsCpWWwWNDBDFlUnZJJzD/y2S51NqKbEMWTk9jkMGiqUYwD6tDdAGp3Y/pbW1y6G0G6NiTHlTEDM/g1r5YSxcBaRaUq4mK7Cyx0MR5AutgFbfjoF+LwuHxLYwaEscP2JmcBJsVlxxEtqHu1OdXdyk3gay2VhqNo4hZ4hmDnuYU9cL9ZClwcMIIZdWYpckLkR6pwqxAHbiVcyNwEsqLC20J2CZOIvM+mZhlcrLTo5RaO2zpxX28k3HxJf0wiXYKBmvcTst91aRkwPw2haEQmxLuwGZHZUbVwgM03x7VsjktPGYihYBre/+rEdYlv2WyIsqL3RVhkbuAfLXGWpZvAF3yix6EPprg8Iiu9WgRnBzw2gMSFNrpiSWzTkIkI1UYvT2j+VpQfi6TE98+2bnW4DxzXiSC3XMRCclycoyVuhVvg8J8r42Ep4UalE2ZvBeKyEYnFNm7EUyz04yOpONyp4GSJn0dy89qJe9oSB1aec8AsA/2ViBP2iCHD9xN+jeGcREBRLYAkiTI5BmTcPNLQqyBHMTeY4CesPZcRzWA7cO+qAj/3TQnxlrMqIiNK5jBp0sSWxjQ7+nTCcBMMQH5+mqEmHihKZ5DR17tCWdullq7MNcso50GL++2mylLc/RaPA3n7zXa/J92Pc3RjW6BLNuz3+3/Shhdy3J4ed8DHkR0B0fP7fAlm+EA6bGu3Z88iMaJxWBbsWdveZLzbxyZvV7W4v39ocSttICsGAPBVg+omu1V/Tnlc+SQ7pHFg9ZT6Yxu6UMP9eP/SFbI6riTeLzFuvrXhfjnxysKt43418d68tuMKxuELDMmjqXBfP6yvqwpN3LfXu6/D+/DahYt9m/VlaVW4rx9fQn/f71774b7efgHeGxWtGhcpxC8Gfn+4fR2A+/rt4eZXwn5osHS4CPju1xC/32gk245LiR9uPnU8PNzdthG14n690Y779vZW9cG8sfvyUDxW7n0nv1hyRq/C6/lj0qedK12O8DbaqL2X9FGvl+LWuNs+uB+rQtojKYOSV/59z8R9/XTc1zM15LNwu5WjYw7+StwuPMGuvJU/xOsnKkMr7ufY3f8H7hNkh/sORnQAAAAASUVORK5CYII=";
 /* ======== constants ======== */
 const LOGIN_HASH = "f2e65126f6d559bb7553c5674c610b159efbd99e9a2218acc57530b8839bb6cd";
-const LS = "cricheads_auction_v1", LS_TOK = "cricheads_tok", LS_REPO = "cricheads_repo", SS_PW = "cricheads_pw";
+const LS = "cricheads_auction_v1", LS_TOK = "cricheads_tok", LS_REPO = "cricheads_repo", SS_PW = "cricheads_pw", SS_EYE = "cricheads_eye";
 const GIST_DESC = "Cricheads auction data (private)", GIST_FILE = "auction.json";
-const ROLES = [["Batter","bat"],["Bowler","bowl"],["All-rounder","ar"],["Wicket-keeper","wk"]];
-const SEED_ID = "bpl7";
-const SEED_POOL = ["Shail Shah", "Karan Bhasin", "Dhaval Mehta", "Dhaval Gajaria", "Mathew Thomas", "Vineet Gangwani", "Ankit Kolwankar", "Ameet Chandak", "Roshan Makharia", "Gaurav Nishar", "Ved Sirdeshpande", "Kunal Sheth", "Kunal Lalu", "Vatsal Shah", "Darshan Sheth", "Sagar Thakkar", "Jigar Shah", "Rajesh Savla", "Tarun Agarwal", "Sachin Shah", "Alok Shah", "Rachit Dedhia", "Niranjan Ravishankar", "Mayank Gangar", "Nigam Haria", "Hardik Haria", "Rachit Vora", "Jay Shah", "Dhaval Gandhi", "Maneesh Jawkar", "Hemal Shah", "Siddharth Chheda", "Amit Furia", "Jay Oza", "Rushabh Daftari", "Jimit Sanghavi", "Varun Shobhawat", "Chunky Shah", "Sumit Jain", "Rushil Parekh", "Atash Shah", "Viral Thakker", "Nisarg Acharya", "Kushal Vora", "Jeet Gala", "Srinath Sridhar", "Shashank Singh", "Karan Dedhia", "Vijay Shah", "Chintan Valia", "Nirav Shah", "Jasminder Khanna", "Anvay Kolwankar", "Dharmil", "Karan Mulchandani", "Viraj Mehta", "Pramod Dubey", "Zaheer Ghani", "Vishal Nahata", "Sumeet Yagnik", "Sachin Nisar", "Jinesh Sakariya", "Hardik Doshi", "Kavan Dedhia", "Kalpesh Shah", "Himat Obhan", "Priyanshu Shah", "Sagar Doke", "Deep", "Nikhil Toprani", "Pratiek Mehta", "Rishi Shinde", "Rahul Gada", "Ketan Shah", "Lalit Solanki", "Aakash Parikh", "Hrishikesh Palve", "Karan Lalwani", "Rahul Dharap", "Ashish Bhuva", "Shalin Shah", "Ankur Mehta", "Alistair Pinto", "Milap Shah", "Rohan Punamiya", "Manish D Raval", "Vishesh Sangoi"];
+const ROLES = [["Batter","bat"],["Bowler","bowl"],["All-rounder","ar"],["Wicket-keeper","wk"],["Owner","own"],["Icon","icon"]];
+const CAT_KEYS = ["bat","ar","bowl","base"];
+const CAT_LABEL = {bat:"Batters",ar:"All-rounders",bowl:"Bowlers",base:"Base category"};
+const CAT_ONE = {bat:"Batter",ar:"All-rounder",bowl:"Bowler",base:"Base"};
+const SEED_ID = "bpl7", SEED2_ID = "bpl7-plan";
+const SEED_MASTER = [["Shail Shah", "Owner"], ["Karan Bhasin", "Owner"], ["Dhaval Mehta", "Bowler"], ["Dhaval Gajaria", "All Rounder"], ["Mathew Thomas", ""], ["Vineet Gangwani", "Bowler"], ["Ankit Kolwankar", "Batter"], ["Ameet Chandak", "All Rounder"], ["Roshan Makharia", "Bowler"], ["Gaurav Nishar", "Bowler"], ["Ved Sirdeshpande", "Batter"], ["Kunal Sheth", "All Rounder"], ["Kunal Lalu", "Icon"], ["Vatsal Shah", "All Rounder"], ["Darshan Sheth", "Owner"], ["Sagar Thakkar", "All Rounder"], ["Jigar Shah", ""], ["Rajesh Savla", "Batter"], ["Tarun Agarwal", "Batter"], ["Sachin Shah", "Bowler"], ["Alok Shah", "Batter"], ["Rachit Dedhia", "All Rounder"], ["Niranjan Ravishankar", "Bowler"], ["Mayank Gangar", "All Rounder"], ["Nigam Haria", "Icon"], ["Hardik Haria", "Owner"], ["Rachit Vora", "Bowler"], ["Jay Shah", "Batter"], ["Dhaval Gandhi", ""], ["Maneesh Jawkar", "All Rounder"], ["Hemal Shah", "Batter"], ["Siddharth Chheda", "Owner"], ["Amit Furia", "Bowler"], ["Jay Oza", "Batter"], ["Rushabh Daftari", "Batter"], ["Jimit Sanghavi", "Icon"], ["Varun Shobhawat", "Icon"], ["Chunky Shah", "Bowler"], ["Sumit Jain", ""], ["Rushil Parekh", "All Rounder"], ["Atash Shah", "All Rounder"], ["Viral Thakker", "Icon"], ["Nisarg Acharya", "Bowler"], ["Kushal Vora", "Bowler"], ["Jeet Gala", "Batter"], ["Srinath Sridhar", "Batter"], ["Shashank Singh", "All Rounder"], ["Karan Dedhia", ""], ["Vijay Shah", ""], ["Chintan Valia", "Batter"], ["Nirav Shah", "All Rounder"], ["Jasminder Khanna", "All Rounder"], ["Anvay Kolwankar", "Batter"], ["Dharmil", "Icon"], ["Karan Mulchandani", ""], ["Viraj Mehta", ""], ["Pramod Dubey", ""], ["Zaheer Ghani", "Owner"], ["Vishal Nahata", ""], ["Sumeet Yagnik", "Bowler"], ["Sachin Nisar", ""], ["Jinesh Sakariya", "Batter"], ["Hardik Doshi", "Batter"], ["Kavan Dedhia", "Batter"], ["Kalpesh Shah", "Bowler"], ["Himat Obhan", "All Rounder"], ["Priyanshu Shah", "Batter"], ["Sagar Doke", "All Rounder"], ["Deep", "Batter"], ["Nikhil Toprani", "Bowler"], ["Pratiek Mehta", "Batter"], ["Rishi Shinde", "Batter"], ["Rahul Gada", "Batter"], ["Ketan Shah", "Bowler"], ["Lalit Solanki", "Batter"], ["Aakash Parikh", "Bowler"], ["Hrishikesh Palve", "Owner"], ["Karan Lalwani", "Batter"], ["Rahul Dharap", "Owner"], ["Ashish Bhuva", "All Rounder"], ["Shalin Shah", "Bowler"], ["Ankur Mehta", "Icon"], ["Alistair Pinto", "All Rounder"], ["Milap Shah", "Bowler"], ["Rohan Punamiya", "Bowler"], ["Manish D Raval", "Bowler"], ["Vishesh Sangoi", "All Rounder"]];
 const SEED = {
   purse: 80000000,
-  fixed: [{slot:"Retained",name:"Kunal Lalu",price:5000000},{slot:"Retained",name:"Rahul Dharap",price:4000000},{slot:"Retained",name:"Zaheer Ghani",price:1000000}],
+  fixed: [{slot:"Icon",name:"Kunal Lalu",price:5000000,cat:"ar"},{slot:"Owner",name:"Rahul Dharap",price:4000000,cat:"bowl"},{slot:"Owner",name:"Zaheer Ghani",price:1000000,cat:"bat"}],
   teams: [
     {id:"maratha", name:"Team Maratha", owner:"Hrishi",  start:69500000, pre:["Hrishikesh Palve","Varun Shobhawat"]},
     {id:"champion",name:"Team Champion",owner:"Hardik",  start:44500000, pre:["Hardik Haria","Jimit Sanghavi"]},
@@ -404,55 +469,66 @@ const SEED = {
     {id:"fj",      name:"Team FJ",      owner:"Shail",   start:64500000, pre:["Shail Shah","Nigam Haria"]},
     {id:"topline", name:"Team Topline", owner:"Sid",     start:63000000, pre:["Siddharth Chheda","Viral Thakker"]},
     {id:"bhasin",  name:"Team Bhasin",  owner:"Karan",   start:56000000, pre:["Karan Bhasin","Dharmil"]}
-  ]
+  ],
+  plan: {
+    buffer: 2000000,
+    cats: [{key:"bat",slots:2,budget:10000000},{key:"ar",slots:2,budget:36000000},{key:"bowl",slots:2,budget:22500000},{key:"base",slots:2,budget:1500000}],
+    picks: [
+      {cat:"bat", opts:["Hemal Shah"]},
+      {cat:"bat", opts:["Jay Shah","Lalit Solanki","Karan Lalwani"]},
+      {cat:"ar",  opts:["Maneesh Jawkar","Rushil Parekh","Himat Obhan"]},
+      {cat:"ar",  opts:["Ameet Chandak","Vatsal Shah","Dhaval Gajaria"]},
+      {cat:"bowl",opts:["Manish D Raval","Ketan Shah","Amit Furia"]},
+      {cat:"bowl",opts:["Kushal Vora","Mayank Gangar"]}
+    ]
+  }
 };
-const blank = () => ({v:2,seed:"",updatedAt:0,team:{name:"Cricheads",logo:""},purse:0,squadSize:0,minBid:0,
-  fixed:[{slot:"Retained",name:"",price:0},{slot:"Retained",name:"",price:0},{slot:"Retained",name:"",price:0}],
-  teams:[],pool:[],wish:[],sales:[],unsold:[]});
+const ALIAS = {"chilly":"Hemal Shah","rd":"Rahul Dharap","zee":"Zaheer Ghani","kunal":"Kunal Lalu","dg":"Dhaval Gajaria"};
+const blankPlan = () => ({buffer:2000000,cats:CAT_KEYS.map(k=>({key:k,slots:0,budget:0})),picks:[]});
+const blank = () => ({v:3,seed:"",updatedAt:0,team:{name:"Cricheads",logo:""},purse:0,squadSize:0,minBid:0,
+  fixed:[{slot:"Retained",name:"",price:0,cat:""},{slot:"Retained",name:"",price:0,cat:""},{slot:"Retained",name:"",price:0,cat:""}],
+  teams:[],pool:[],plan:blankPlan(),sales:[],unsold:[]});
 let role = "admin", userName = "admin";
 let S = blank(), password = "", gistId = null, saveTimer = null;
-let sel = null, matches = [], mIdx = 0, chosenTeam = "", sideTab = "wish", aFilter = "avail", openTeams = new Set();
+let sel = null, matches = [], mIdx = 0, chosenTeam = "", chosenCat = "", sideTab = "plan", aFilter = "avail", rFilter = "all", openTeams = new Set();
 
 /* ======== helpers ======== */
 const $ = id => document.getElementById(id);
 const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const norm = s => String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 const num = v => { const n = parseFloat(String(v??"").replace(/[^0-9.\-]/g,"")); return isFinite(n)?n:0; };
-function amt(v){ // "25L", "2.5cr", "2500000", "25,00,000" -> number | null | NaN
+function amt(v){
   let s=String(v??"").toLowerCase().replace(/[,₹\s]/g,""); if(!s) return null;
   const m=s.match(/^(\d*\.?\d+)(cr|crs|crore|crores|c|l|lac|lacs|lakh|lakhs|k)?$/); if(!m) return NaN;
   let n=parseFloat(m[1]); const u=m[2]||""; if(u.startsWith("c")) n*=1e7; else if(u.startsWith("l")) n*=1e5; else if(u==="k") n*=1e3;
   return Math.round(n);
 }
-const fmt = n => "₹"+Math.round(n).toLocaleString("en-IN");
+const fmt = n => (n<0?"−":"")+"₹"+Math.abs(Math.round(n)).toLocaleString("en-IN");
 const fmtN = n => Math.round(n).toLocaleString("en-IN");
-function short(n){ n=Math.round(n); const a=Math.abs(n);
-  if(a>=1e7) return +(n/1e7).toFixed(4)+" Cr"; if(a>=1e5) return +(n/1e5).toFixed(3)+" L"; return fmtN(n); }
-const sgn = n => (n>0?"+":n<0?"−":"")+fmt(Math.abs(n));
-function roleKey(r){ const s=norm(r); if(!s) return ""; if(/wk|keep/.test(s)) return "wk"; if(/all|^ar$/.test(s)) return "ar"; if(/bowl/.test(s)) return "bowl"; if(/bat/.test(s)) return "bat"; return "x"; }
+function short(n){ n=Math.round(n); const a=Math.abs(n), s=n<0?"−":"";
+  if(a>=1e7) return s+(+(a/1e7).toFixed(4))+" Cr"; if(a>=1e5) return s+(+(a/1e5).toFixed(3))+" L"; return s+fmtN(a); }
+const sgn = n => (n>0?"+":n<0?"−":"")+fmt(Math.abs(n)).replace("−","");
+function roleKey(r){ const s=norm(r); if(!s) return ""; if(/owner/.test(s)) return "own"; if(/icon/.test(s)) return "icon"; if(/wk|keep/.test(s)) return "wk"; if(/all|^ar$/.test(s)) return "ar"; if(/bowl/.test(s)) return "bowl"; if(/bat/.test(s)) return "bat"; if(/base/.test(s)) return "base"; return "x"; }
 function roleName(r){ const k=roleKey(r); const f=ROLES.find(x=>x[1]===k); return f?f[0]:(r||""); }
 const roleTag = r => r ? `<span class="tag r-${roleKey(r)||"x"}">${esc(roleName(r))}</span>` : "";
 function tidyName(n){ return String(n||"").trim().replace(/\s+/g," ").split(" ").map(w=>(w===w.toLowerCase()||w===w.toUpperCase())?w.charAt(0).toUpperCase()+w.slice(1).toLowerCase():w).join(" "); }
-function toast(m){ const t=$("toast"); t.textContent=m; t.classList.remove("hide"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.add("hide"),2600); }
+function toast(m){ const t=$("toast"); t.textContent=m; t.classList.remove("hide"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.add("hide"),3200); }
 async function sha256(s){ const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""); }
 const b64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
 const unb64 = s => Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 const utf8b64 = s => btoa(unescape(encodeURIComponent(s)));
+function lev(a,b){ const m=a.length,n=b.length; if(Math.abs(m-n)>2) return 9; const d=[...Array(n+1).keys()];
+  for(let i=1;i<=m;i++){ let p=d[0]; d[0]=i; for(let j=1;j<=n;j++){ const t=d[j]; d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1)); p=t; } } return d[n]; }
+const isPriv = () => document.body.classList.contains("priv");
 
 /* ======== derived ======== */
 const myName = () => S.team.name||"My team";
 function teamName(id){ if(id==="me") return myName(); const t=S.teams.find(x=>x.id===id); return t?t.name:"(deleted team)"; }
 function teamShort(id){ return teamName(id).replace(/^team\s+/i,""); }
 function poolOf(n){ const k=norm(n); return S.pool.find(p=>norm(p.name)===k); }
-function wishOf(n){ const k=norm(n); return S.wish.find(p=>norm(p.name)===k); }
-function targetOf(n){ const w=wishOf(n); if(w&&w.target!=null) return w.target; const p=poolOf(n); return p&&p.target!=null?p.target:null; }
+function targetOf(n){ const p=poolOf(n); return p&&p.target!=null?p.target:null; }
 function baseOf(n){ const p=poolOf(n); return p&&p.base!=null?p.base:null; }
-function roleOf(n){ const p=poolOf(n); return (p&&p.role)||((wishOf(n)||{}).role)||""; }
-function wishList(){ const out=[], seen=new Set();
-  S.wish.forEach(w=>{ const k=norm(w.name); if(!seen.has(k)){ seen.add(k); out.push({name:w.name,target:targetOf(w.name)}); } });
-  S.pool.forEach(p=>{ const k=norm(p.name); if(p.target!=null && !seen.has(k)){ seen.add(k); out.push({name:p.name,target:p.target}); } });
-  return out; }
-/* status of any player */
+function roleOf(n){ const p=poolOf(n); return (p&&p.role)||""; }
 function statusMap(){
   const m=new Map();
   S.fixed.forEach(f=>{ if(f.name.trim()) m.set(norm(f.name),{kind:"mine",team:"me",price:num(f.price),fixed:true}); });
@@ -461,31 +537,84 @@ function statusMap(){
   S.sales.forEach(s=>m.set(norm(s.name),{kind:s.team==="me"?"mine":"other",team:s.team,price:s.price,sale:s}));
   return m;
 }
-function teamStats(id){
-  const sales=S.sales.filter(s=>s.team===id), bought=sales.reduce((a,s)=>a+s.price,0);
-  let start,count,roster;
-  if(id==="me"){ const fx=S.fixed.filter(f=>f.name.trim()); start=num(S.purse); const fxs=fx.reduce((a,f)=>a+num(f.price),0);
-    count=fx.length+sales.length; roster=[...fx.map(f=>({name:f.name,price:num(f.price),note:f.slot||"Retained"})),...sales.map(s=>({name:s.name,price:s.price,sale:s}))];
-    const left=start-fxs-bought; return {id,start,spent:fxs+bought,left,count,roster,max:maxBid(count,left)}; }
-  const t=S.teams.find(x=>x.id===id); start=num(t.start); count=t.pre.length+sales.length;
-  roster=[...t.pre.map(n=>({name:n,price:null,note:"Pre-signed"})),...sales.map(s=>({name:s.name,price:s.price,sale:s}))];
-  const left=start-bought; return {id,start,spent:bought,left,count,roster,max:maxBid(count,left)};
-}
 function maxBid(count,left){ if(!S.squadSize) return left; const slots=S.squadSize-count; if(slots<=0) return 0; return Math.max(0,left-num(S.minBid)*(slots-1)); }
+function teamStats(id, sales=S.sales){
+  const own=sales.filter(s=>s.team===id), bought=own.reduce((a,s)=>a+s.price,0);
+  if(id==="me"){ const fx=S.fixed.filter(f=>f.name.trim()), fxs=fx.reduce((a,f)=>a+num(f.price),0), start=num(S.purse);
+    const count=fx.length+own.length, left=start-fxs-bought;
+    const roster=[...fx.map(f=>({name:f.name,price:num(f.price),note:f.slot||"Retained",cat:f.cat})),...own.map(s=>({name:s.name,price:s.price,sale:s,cat:saleCat(s)}))];
+    return {id,start,spent:fxs+bought,left,count,roster,max:maxBid(count,left)}; }
+  const t=S.teams.find(x=>x.id===id), start=num(t.start), count=t.pre.length+own.length, left=start-bought;
+  const roster=[...t.pre.map(n=>({name:n,price:null,note:"Pre-signed"})),...own.map(s=>({name:s.name,price:s.price,sale:s}))];
+  return {id,start,spent:bought,left,count,roster,max:maxBid(count,left)};
+}
 function diffCls(price,target){ if(target==null) return "none"; return price<target?"under":price>target?"over":"on"; }
+
+/* ======== plan engine ======== */
+const pcat = k => S.plan.cats.find(c=>c.key===k) || {key:k,slots:0,budget:0};
+function planPickOf(name){ const k=norm(name);
+  for(let i=0;i<S.plan.picks.length;i++){ const p=S.plan.picks[i]; const j=p.opts.findIndex(o=>norm(o)===k); if(j>=0) return {pick:p,idx:i,choice:j}; } return null; }
+function saleCat(s){ return s.cat || (planPickOf(s.name)||{pick:{}}).pick.cat || (["bat","bowl","ar"].includes(roleKey(roleOf(s.name)))?roleKey(roleOf(s.name)):"base"); }
+function defaultCat(name){
+  const pp=planPickOf(name); if(pp) return pp.pick.cat;
+  const st=planState(); const open=k=>{ const c=st.cats.find(x=>x.key===k); return c&&c.open>0; };
+  const r=roleKey(roleOf(name)); if(["bat","bowl","ar"].includes(r)&&open(r)) return r;
+  if(open("base")) return "base";
+  return ["bat","bowl","ar"].includes(r)?r:"base";
+}
+function planState(sales=S.sales){
+  const floor=num(S.minBid), me=teamStats("me",sales), L=me.left, mine=sales.filter(s=>s.team==="me");
+  const cats=S.plan.cats.map(c=>{ const ms=mine.filter(s=>saleCat(s)===c.key).sort((a,b)=>a.at-b.at), spent=ms.reduce((a,s)=>a+s.price,0);
+    return {key:c.key,label:CAT_LABEL[c.key],slots:num(c.slots),budget:num(c.budget),mine:ms,spent,filled:ms.length,open:Math.max(0,num(c.slots)-ms.length),R:num(c.budget)-spent}; });
+  const nb=cats.filter(c=>c.key!=="base"&&c.open>0), base=cats.find(c=>c.key==="base");
+  const reservedNB=nb.reduce((a,c)=>a+Math.max(0,c.R),0), baseNeed=base&&base.open>0?base.open*floor:0;
+  const flex=L-reservedNB-baseNeed;                 // savings + base spare (negative = shortfall)
+  const shortfall=Math.max(0,-flex), sumR=nb.reduce((a,c)=>a+Math.max(0,c.R),0);
+  cats.forEach(c=>{
+    if(c.key==="base"){ c.eff=c.open>0?Math.max(baseNeed,Math.min(c.R,L-reservedNB)):0; }
+    else if(c.open>0){ c.eff=Math.max(0,c.R)-(sumR>0?shortfall*Math.max(0,c.R)/sumR:0); }
+    else c.eff=0;
+    c.planMax=c.open>0?Math.max(0,c.eff-(c.open-1)*floor):0;
+    c.bufMax=c.open>0?(c.key==="base"?c.planMax:c.planMax+num(S.plan.buffer)):0;
+    c.trim=c.key!=="base"&&c.open>0?Math.max(0,c.R)-c.eff:0;
+  });
+  // picks
+  const used=new Set(), picks=S.plan.picks.map((p,i)=>({...p,i,filledBy:null}));
+  picks.forEach(p=>{ const s=mine.find(s=>!used.has(s.id)&&p.opts.some(o=>norm(o)===norm(s.name))); if(s){ p.filledBy=s; used.add(s.id); } });
+  const stm=statusMap();
+  picks.forEach(p=>{ p.optSt=p.opts.map(o=>{ const s=stm.get(norm(o)); return {name:o,known:!!poolOf(o)||!!s,st:!s?"avail":s.kind==="unsold"?"uns":s.kind==="mine"?"got":"gone",team:s&&s.team,price:s&&s.price}; });
+    p.next=p.filledBy?null:(p.optSt.find(o=>o.st==="avail"||o.st==="uns")||null); p.allGone=!p.filledBy&&!p.next; });
+  cats.forEach(c=>{ const cp=picks.filter(p=>p.cat===c.key);
+    // purchases in this group not tied to an option fill open picks (all-gone ones first)
+    const extra=c.mine.filter(s=>!used.has(s.id));
+    [...cp.filter(p=>!p.filledBy&&p.allGone),...cp.filter(p=>!p.filledBy&&!p.allGone)].forEach(p=>{ const s=extra.shift(); if(s){ p.filledBy=s; p.other=true; used.add(s.id); } });
+    c.picks=cp; c.extra=c.mine.filter(s=>!used.has(s.id)); });
+  return {cats,flex,shortfall,L,floor,max:me.max};
+}
 
 /* ======== storage & sync ======== */
 function saveLocal(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
 function upgrade(d){ const x=Object.assign(blank(),d);
-  if(d.v===1||!d.v){ x.v=2; x.sales=(d.squad||[]).map(p=>({id:p.id,name:p.name,team:"me",price:num(p.price),at:p.at||0})); x.unsold=[]; delete x.squad; delete x.gone; }
-  return x; }
+  if(d.v===1||!d.v){ x.sales=(d.squad||[]).map(p=>({id:p.id,name:p.name,team:"me",price:num(p.price),at:p.at||0})); x.unsold=[]; delete x.squad; delete x.gone; }
+  if(!x.plan||!x.plan.cats) x.plan=blankPlan();
+  delete x.wish; x.v=3; return x; }
 function loadLocal(){ try{ const d=JSON.parse(localStorage.getItem(LS)); if(d) S=upgrade(d); }catch(e){} }
 function commit(){ S.updatedAt=Date.now(); saveLocal(); render(); queueCloud(); }
+function masterPool(keep){ // replace the list with the master, keeping prices already entered and any extra names from sales
+  const old=new Map((keep||[]).map(p=>[norm(p.name),p]));
+  const list=SEED_MASTER.map(([n,r])=>{ const o=old.get(norm(n))||{}; return {name:n,role:r,base:o.base??null,target:o.target??null}; });
+  S.sales.forEach(s=>{ if(!list.some(p=>norm(p.name)===norm(s.name))) list.push({name:s.name,role:"",base:null,target:null}); });
+  return list;
+}
 function ensureSeed(){
-  if(S.seed===SEED_ID) return false;
-  S.seed=SEED_ID; S.purse=SEED.purse; S.fixed=JSON.parse(JSON.stringify(SEED.fixed)); S.teams=JSON.parse(JSON.stringify(SEED.teams));
-  S.pool=SEED_POOL.map(n=>({name:n,base:null,target:null,role:""})); S.wish=[]; S.sales=[]; S.unsold=[];
-  return true;
+  let changed=false;
+  if(S.seed!==SEED_ID&&S.seed!==SEED2_ID){ S.purse=SEED.purse; S.teams=JSON.parse(JSON.stringify(SEED.teams)); S.sales=[]; S.unsold=[]; S.pool=[]; S.seed=SEED_ID; changed=true; }
+  if(S.seed===SEED_ID){
+    S.fixed=JSON.parse(JSON.stringify(SEED.fixed)); S.pool=masterPool(S.pool); S.plan=JSON.parse(JSON.stringify(SEED.plan));
+    if(!S.squadSize) S.squadSize=11; S.seed=SEED2_ID; changed=true; }
+  // nickname fix-ups for plans saved before the full name was known
+  S.plan.picks.forEach(p=>p.opts=p.opts.map(o=>{ const a=ALIAS[norm(o)]; if(a&&a!==o&&!poolOf(o)){ changed=true; return a; } return o; }));
+  return changed;
 }
 function setSync(state,txt){ const el=$("sync"); el.textContent=txt; el.classList.toggle("bad",state==="error"); }
 function tok(){ try{return localStorage.getItem(LS_TOK)||"";}catch(e){return "";} }
@@ -534,7 +663,7 @@ async function encryptTok(t,pw){ const salt=crypto.getRandomValues(new Uint8Arra
 async function decryptTok(c,pw){ const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(c.iv)},await keyFrom(pw,unb64(c.salt)),unb64(c.ct)); return new TextDecoder().decode(pt); }
 const normKeys = k => k&&k.ct ? {v:2,admin:k,users:{}} : Object.assign({v:2,admin:null,users:{}},k||{});
 const fromB64 = c => JSON.parse(decodeURIComponent(escape(atob(c.replace(/\n/g,"")))));
-async function fetchKeys(){ // public read, before login
+async function fetchKeys(){
   const repo=repoGuess();
   if(repo){ try{ const r=await fetch(`https://api.github.com/repos/${repo}/contents/sync.json?t=${Date.now()}`,{cache:"no-store"}); if(r.ok) return normKeys(fromB64((await r.json()).content)); }catch(e){} }
   try{ const r=await fetch("sync.json?"+Date.now(),{cache:"no-store"}); if(r.ok) return normKeys(await r.json()); }catch(e){}
@@ -566,8 +695,40 @@ function mapRows(rows){
   if(ni<0) ni=0;
   const out=[], seen=new Set();
   for(const r of body){ const name=tidyName(r[ni]); if(!name) continue; const k=norm(name); if(!k||seen.has(k)) continue; seen.add(k);
-    out.push({name,role:ri>=0?roleName(r[ri]):"",base:bi>=0?cellAmt(r[bi]):null,target:ti>=0?cellAmt(r[ti]):null}); }
+    out.push({name,role:ri>=0?String(r[ri]||"").trim():"",base:bi>=0?cellAmt(r[bi]):null,target:ti>=0?cellAmt(r[ti]):null}); }
   return out;
+}
+/* match a nickname from the wish list to a player in the list */
+function resolveNick(raw,cat){
+  const t=tidyName(String(raw||"").replace(/^[-–]+$/,"")); const k=norm(t); if(!k) return null;
+  if(ALIAS[k]) return {name:ALIAS[k],ok:true};
+  const ex=poolOf(t); if(ex) return {name:ex.name,ok:true};
+  const toks=k.split(" ");
+  let c=S.pool.filter(p=>{ const ws=norm(p.name).split(" "); return toks.every(tk=>ws.some(w=>w===tk||(tk.length>=5&&lev(w,tk)<=1))); });
+  if(!c.length&&k.length<=3&&!k.includes(" ")) c=S.pool.filter(p=>norm(p.name).split(" ").map(w=>w[0]).join("")===k);
+  if(c.length>1&&cat){ const f=c.filter(p=>roleKey(p.role)===cat); if(f.length) c=f; }
+  if(c.length>1){ const f=c.filter(p=>S.fixed.some(x=>norm(x.name)===norm(p.name))); if(f.length===1) c=f; }
+  if(c.length===1) return {name:c[0].name,ok:true};
+  return {name:t,ok:false,why:c.length?"matches "+c.map(p=>p.name).join(" / "):"not in player list"};
+}
+function parseWish(rows){
+  let h=rows.findIndex(r=>r.some(c=>/category|option|choice|probable/i.test(String(c)))); if(h<0) h=-1;
+  const head=h>=0?rows[h].map(c=>norm(c)):[]; let ci=head.findIndex(c=>/category|role|type/.test(c)); if(ci<0) ci=3;
+  const picks=[], notes=[], fixedCat={}; let baseSlots=0;
+  for(const r of rows.slice(h+1)){
+    const cells=r.map(c=>String(c??"").trim()); if(!cells.some(Boolean)) continue;
+    if(cells.filter(Boolean).every(c=>/^base/i.test(c))){ baseSlots++; continue; }
+    let cat=roleKey(cells[ci]); const opts=cells.filter((c,i)=>i!==ci&&c&&!/^[-–]+$/.test(c)).slice(0,3);
+    if(!opts.length) continue;
+    const res=opts.map(o=>resolveNick(o,cat)).filter(Boolean);
+    // retained player row → just sets what they play as
+    if(res.length===1&&res[0].ok&&S.fixed.some(f=>norm(f.name)===norm(res[0].name))){ fixedCat[norm(res[0].name)]=cat; continue; }
+    const roles=res.filter(x=>x.ok).map(x=>roleKey(roleOf(x.name))).filter(r=>["bat","bowl","ar"].includes(r));
+    if(roles.length>=2&&roles.every(r=>r===roles[0])&&roles[0]!==cat){ notes.push(`${res[0].name}: file says ${CAT_ONE[cat]||cells[ci]}, but all its players are ${CAT_LABEL[roles[0]]} in the player list — put under ${CAT_LABEL[roles[0]]}.`); cat=roles[0]; }
+    if(!["bat","bowl","ar"].includes(cat)) cat="bat";
+    picks.push({cat,opts:res.map(x=>x.name)});
+  }
+  return {picks,baseSlots,fixedCat,notes};
 }
 
 /* ======== render ======== */
@@ -590,14 +751,18 @@ function renderChips(){
   $("teamChips").innerHTML=ids.map(id=>{ const s=teamStats(id); const poor=p&&p>s.left;
     return `<button type="button" class="chip ${id==="me"?"me":""} ${chosenTeam===id?"on":""} ${poor?"poor":""}" data-team="${id}">${esc(id==="me"?myName()+" (us)":teamShort(id))}<small>${short(s.left)} left</small></button>`; }).join("")
     + `<button type="button" class="chip uns ${chosenTeam==="unsold"?"on":""}" data-team="unsold">Unsold<small>no bids</small></button>`;
+  $("catBox").classList.toggle("hide",chosenTeam!=="me");
+  if(chosenTeam==="me"){ const ps=planState();
+    $("catChips").innerHTML=CAT_KEYS.map(k=>{ const c=ps.cats.find(x=>x.key===k)||{filled:0,slots:0};
+      return `<button type="button" class="chip ${chosenCat===k?"on":""}" data-cat="${k}">${CAT_LABEL[k]}<small>${c.filled}/${c.slots} filled</small></button>`; }).join(""); }
 }
 function renderTeams(){
-  const ids=["me",...S.teams.map(t=>t.id)], stats=ids.map(teamStats).sort((a,b)=>b.left-a.left), me=teamStats("me");
+  const ids=["me",...S.teams.map(t=>t.id)], stats=ids.map(id=>teamStats(id)).sort((a,b)=>b.left-a.left), me=teamStats("me");
   const maxStart=Math.max(1,...stats.map(s=>s.start));
   $("teamsList").innerHTML=stats.map(s=>{ const t=S.teams.find(x=>x.id===s.id);
     const owner=s.id==="me"?"Us":(t.owner||"");
     const rich=s.id!=="me"&&s.max>me.max?`<div class="rich">can outbid you</div>`:"";
-    const roster=s.roster.length?s.roster.map(r=>`<div class="tp"><span>${esc(r.name)} ${r.note?`<span class="small">· ${esc(r.note)}</span>`:""}</span><b>${r.price==null?"—":fmt(r.price)}</b></div>`).join(""):`<div class="small" style="padding:6px 0">No players yet.</div>`;
+    const roster=s.roster.length?s.roster.map(r=>`<div class="tp"><span>${esc(r.name)} ${roleTag(roleOf(r.name))} ${r.note?`<span class="small">· ${esc(r.note)}</span>`:""}</span><b>${r.price==null?"—":fmt(r.price)}</b></div>`).join(""):`<div class="small" style="padding:6px 0">No players yet.</div>`;
     return `<div class="team ${s.id==="me"?"mine":""} ${openTeams.has(s.id)?"open":""}" data-tid="${s.id}">
       <div class="thead"><div class="tn"><div>${esc(teamName(s.id))}</div><div class="small">${esc(owner)}</div>${rich}</div>
         <div class="v left"><small>Left</small>${fmt(s.left)}</div>
@@ -613,59 +778,91 @@ function renderLog(){
   $("logCount").textContent=rows.length;
   if(!rows.length){ $("logBody").innerHTML=`<tr><td colspan="6" class="empty">No lots recorded yet.</td></tr>`; return; }
   $("logBody").innerHTML=rows.map((r,i)=>{
-    if(r.kind==="unsold") return `<tr><td class="small">${rows.length-i}</td><td class="pname">${esc(r.name)}${r.by?`<div class="small">by ${esc(r.by)}</div>`:""}</td><td><span class="tag t-unsold">Unsold</span></td><td class="n">—</td><td class="n hidem"></td>
+    const by=r.by?`<div class="small">by ${esc(r.by)}</div>`:"";
+    if(r.kind==="unsold") return `<tr><td class="small">${rows.length-i}</td><td class="pname">${esc(r.name)}${by}</td><td><span class="tag t-unsold">Unsold</span></td><td class="n">—</td><td class="n hidem pv"></td>
       <td class="n"><button class="icon" data-delu="${esc(r.name)}" title="Remove">✕</button></td></tr>`;
-    const t=targetOf(r.name), c=diffCls(r.price,t), d=t==null?"—":(c==="on"?"On target":sgn(r.price-t));
-    return `<tr><td class="small">${rows.length-i}</td><td class="pname">${esc(r.name)}${r.by?`<div class="small">by ${esc(r.by)}</div>`:""}</td><td><span class="tag ${r.team==="me"?"t-me":"t-other"}">${esc(teamShort(r.team))}</span></td>
-      <td class="n"><b>${fmt(r.price)}</b></td><td class="n hidem">${t==null?'<span class="small">—</span>':`<span class="diff d-${c}">${d}</span>`}</td>
+    const pp=planPickOf(r.name); let vs="";
+    if(r.team==="me") vs=`<span class="tag r-${saleCat(r)}">${CAT_ONE[saleCat(r)]}</span>`;
+    else if(pp) vs=`<span class="diff d-over" title="One of your choices">Your ${["1st","2nd","3rd"][pp.choice]} choice</span>`;
+    return `<tr><td class="small">${rows.length-i}</td><td class="pname">${esc(r.name)}${by}</td><td><span class="tag ${r.team==="me"?"t-me":"t-other"}">${esc(teamShort(r.team))}</span></td>
+      <td class="n"><b>${fmt(r.price)}</b></td><td class="n hidem pv">${vs}</td>
       <td class="n"><button class="icon" data-edit="${r.id}" title="Edit price">✎</button><button class="icon" data-del="${r.id}" title="Remove">✕</button></td></tr>`; }).join("");
 }
 function renderSquad(){
   const me=teamStats("me"); $("sqCount").textContent=me.count;
-  const tracked=me.roster.filter(r=>r.sale&&targetOf(r.name)!=null), vs=tracked.reduce((a,r)=>a+r.price-targetOf(r.name),0);
-  $("sqVs").innerHTML=tracked.length?`vs targets <span class="diff d-${vs>0?"over":vs<0?"under":"on"}">${vs===0?"On target":sgn(vs)}</span>`:"";
-  if(!me.roster.length){ $("sqBody").innerHTML=`<tr><td colspan="6" class="empty">No players yet.</td></tr>`; return; }
-  $("sqBody").innerHTML=me.roster.map((r,i)=>{ const t=r.sale?targetOf(r.name):null, b=baseOf(r.name), c=diffCls(r.price,t), d=t==null?"—":(c==="on"?"On target":sgn(r.price-t));
-    return `<tr class="${r.sale?"":"fixed"}"><td class="small">${i+1}</td><td><div class="pname">${esc(r.name)}${wishOf(r.name)||targetOf(r.name)!=null?' <span class="star">★</span>':""}</div>${roleTag(roleOf(r.name))} ${r.sale?"":`<span class="tag r-x">${esc(r.note)}</span>`}</td>
-      <td class="n hidem">${b==null?"—":fmt(b)}</td><td class="n hidem">${t==null?"—":fmt(t)}</td><td class="n"><b>${fmt(r.price)}</b></td>
-      <td class="n">${r.sale?(t==null?'<span class="small">Not targeted</span>':`<span class="diff d-${c}">${d}</span>`):'<span class="small">Fixed</span>'}</td></tr>`; }).join("");
+  if(!me.roster.length){ $("sqBody").innerHTML=`<tr><td colspan="5" class="empty">No players yet.</td></tr>`; return; }
+  $("sqBody").innerHTML=me.roster.map((r,i)=>{ const b=baseOf(r.name);
+    return `<tr class="${r.sale?"":"fixed"}"><td class="small">${i+1}</td><td><div class="pname">${esc(r.name)}</div>${r.sale?"":`<span class="tag r-x">${esc(r.note)}</span>`}</td>
+      <td>${r.cat?`<span class="tag r-${r.cat}">${CAT_ONE[r.cat]}</span>`:roleTag(roleOf(r.name))}</td>
+      <td class="n hidem">${b==null?"—":fmt(b)}</td><td class="n"><b>${fmt(r.price)}</b></td></tr>`; }).join("");
 }
-function playerRow(name,target,s,cur){
-  const base=baseOf(name); let cls="",tick="",sub="";
-  if(s&&s.kind==="mine"){ cls="got"; tick="✓"; const c=diffCls(s.price,target); sub=s.fixed?`<small>Retained</small>`:`<span class="diff d-${c}" style="font-size:11px">${fmt(s.price)}</span>`; }
+function playerRow(name,s,cur){
+  const base=baseOf(name), t=targetOf(name); let cls="",tick="",sub="";
+  if(s&&s.kind==="mine"){ cls="got"; tick="✓"; sub=s.fixed?`<small>Retained</small>`:`<small>${short(s.price)}</small>`; }
   else if(s&&s.kind==="other"){ cls="lost"; tick="✕"; sub=`<small>${esc(teamShort(s.team))}${s.price!=null?" · "+short(s.price):""}</small>`; }
   else if(s&&s.kind==="unsold"){ cls="uns"; tick="U"; sub=`<small>Unsold so far</small>`; }
-  else sub=base!=null?`<small>Base ${short(base)}</small>`:"";
+  const right=base!=null?`<small>Base ${short(base)}</small>`:"";
+  const star=planPickOf(name)?' <span class="star pv">★</span>':"";
   return `<div class="wi ${cls} ${norm(name)===cur?"cur":""}" data-pick="${esc(name)}"><div class="tick">${tick}</div>
-    <div class="nm"><div>${esc(name)}</div>${roleTag(roleOf(name))}</div><div class="tg">${target==null?'<span class="small">—</span>':fmt(target)}${sub}</div></div>`;
+    <div class="nm"><div>${esc(name)}${star}</div>${roleTag(roleOf(name))}</div><div class="tg">${t!=null?`<span class="pv">${fmt(t)}</span>`:""}${sub||right}</div></div>`;
+}
+function renderPlan(cur){
+  if(isPriv()) return `<div class="lock"><div class="big">🔒</div><p>Your plan is hidden so nobody looking at the screen can see it.</p><button class="btn red" data-eye="1">Show my plan</button></div>`;
+  const ps=planState(), B=num(S.plan.buffer);
+  const totalBudget=ps.cats.reduce((a,c)=>a+c.budget,0), totalSpent=ps.cats.reduce((a,c)=>a+c.spent,0);
+  let h=`<div class="links" style="margin:0 0 8px;justify-content:space-between"><span class="small">Buffer per pick: <b>${short(B)}</b></span><button class="link" data-eye="0">🔒 Hide plan</button></div>`;
+  h+=`<div class="psum"><div><b>${short(totalBudget-totalSpent)}</b><span>Plan money left</span></div>
+      <div class="${ps.flex<0?"bad":""}"><b>${ps.flex<0?"−"+short(-ps.flex):short(ps.flex)}</b><span>${ps.flex<0?"Over plan":"Spare / buffer"}</span></div>
+      <div><b>${short(ps.L)}</b><span>Kitty left</span></div></div>`;
+  if(ps.shortfall>0) h+=`<div class="warn bad" style="margin:0 0 10px">You're ${fmt(ps.shortfall)} over plan. The groups still open have been trimmed to cover it.</div>`;
+  ps.cats.forEach(c=>{
+    if(!c.slots&&!c.mine.length) return;
+    const done=c.open===0;
+    h+=`<div class="pcat"><div class="pch"><b>${c.label}</b><span class="cnt ${done?"done":""}">${c.filled}/${c.slots}</span></div>
+      <div class="pmoney"><div>Budget<b>${short(c.budget)}</b></div><div>Spent<b>${short(c.spent)}</b></div><div class="${c.R<0?"neg":""}">${done?(c.R>=0?"Saved":"Over by"):"Left"}<b>${short(Math.abs(c.R))}</b></div></div>`;
+    if(!done){ const g=c.key==="base"?`Next ${c.key==="base"?"base player":"pick"}: up to <b>${short(c.planMax)}</b>`
+        :`Next pick: plan up to <b>${short(c.planMax)}</b> · <span class="amb">with buffer <b>${short(c.bufMax)}</b></span>`;
+      h+=`<div class="pnext">${g}${c.trim>0?` <span class="small">(trimmed ${short(c.trim)})</span>`:""}${c.open>1?` <span class="small">· ${c.open} slots open</span>`:""}</div>`; }
+    h+=`<div class="pbody">`;
+    const ret=S.fixed.filter(f=>f.name.trim()&&f.cat===c.key);
+    if(ret.length) h+=`<div class="retl">Retained: ${ret.map(f=>`<b>${esc(f.name)}</b>`).join(", ")}</div>`;
+    c.picks.forEach((p,pi)=>{
+      const chips=p.optSt.map((o,j)=>{ const cls=o.st==="got"?"got":o.st==="gone"?"gone":o.st==="uns"?"uns":""; const nx=p.next&&p.next.name===o.name?"next":""; const bad=!o.known?"bad":"";
+        const ttl=o.st==="gone"?`${teamShort(o.team)}${o.price!=null?" · "+short(o.price):""}`:!o.known?"Not in the player list":"";
+        return `${j?'<span class="arrow">›</span>':""}<button class="opt ${cls} ${nx} ${bad} ${norm(o.name)===cur?"next":""}" data-pick="${esc(o.name)}" title="${esc(ttl)}"><i>${j+1}</i>${esc(o.name)}</button>`; }).join("");
+      let stat="";
+      if(p.filledBy) stat=`<div class="pstat okk">✓ Got <b>${esc(p.filledBy.name)}</b> for ${fmt(p.filledBy.price)}${p.other?" (not one of the choices)":""}</div>`;
+      else if(p.next) stat=`<div class="pstat">Up now: <b>${esc(p.next.name)}</b>${p.next.st==="uns"?" (went unsold — may come back)":""}</div>`;
+      else { const alts=S.pool.filter(x=>roleKey(x.role)===p.cat&&!statusMap().has(norm(x.name))).slice(0,8);
+        stat=`<div class="pstat alrt">All choices gone — pick any ${CAT_ONE[p.cat].toLowerCase()}:</div><div class="opts" style="margin-top:4px">${alts.map(a=>`<button class="opt" data-pick="${esc(a.name)}">${esc(a.name)}</button>`).join("")||'<span class="small">None left in the list.</span>'}</div>`; }
+      h+=`<div class="pick"><div class="plbl">Pick ${pi+1}</div><div class="opts">${chips}</div>${stat}</div>`;
+    });
+    if(c.key==="base"){ c.mine.forEach(s=>h+=`<div class="pick"><div class="pstat okk">✓ <b>${esc(s.name)}</b> for ${fmt(s.price)}</div></div>`);
+      for(let i=0;i<c.open;i++) h+=`<div class="pick"><div class="pstat">Open slot — any player near base price</div></div>`; }
+    else c.extra.forEach(s=>h+=`<div class="pick"><div class="pstat okk">✓ Also bought <b>${esc(s.name)}</b> for ${fmt(s.price)} (beyond plan slots)</div></div>`);
+    h+=`</div></div>`;
+  });
+  return h;
 }
 function renderSide(){
-  const st=statusMap(), cur=sel?norm(sel.name):"", wl=wishList(), me=teamStats("me");
-  $("wCount").textContent=wl.length?"· "+wl.length:"";
-  $("st-wish").classList.toggle("hide",sideTab!=="wish"); $("st-all").classList.toggle("hide",sideTab!=="all");
+  const st=statusMap(), cur=sel?norm(sel.name):"";
+  $("st-all").classList.toggle("hide",sideTab!=="all");
   document.querySelectorAll(".stabs button").forEach(b=>b.classList.toggle("on",b.dataset.st===sideTab));
-  if(sideTab==="wish"){
-    let got=0,lost=0,need=0; wl.forEach(w=>{ const s=st.get(norm(w.name)); if(s&&s.kind==="mine") got++; else if(s&&s.kind==="other") lost++; else need+=w.target||0; });
-    $("wGot").textContent=got+"/"+wl.length; $("wLost").textContent=lost; $("wNeed").textContent=short(need);
-    $("wWarn").innerHTML= need>me.left ? `<div class="warn" style="margin:0 0 10px">Remaining targets (${fmt(need)}) are more than your kitty left (${fmt(me.left)}).</div>`:"";
-    $("sList").innerHTML=wl.length?wl.map(w=>playerRow(w.name,w.target,st.get(norm(w.name)),cur)).join("")
-      :`<div class="empty">No targets yet.<br>Add a Target Price in the player file, or upload a wish list in Setup.</div>`;
-  } else {
-    const q=norm($("aSearch").value); const all=S.pool.map(p=>({name:p.name,s:st.get(norm(p.name))}));
-    const kind=x=>!x.s?"avail":x.s.kind==="unsold"?"unsold":"sold";
-    const counts={all:all.length,avail:0,sold:0,unsold:0}; all.forEach(x=>counts[kind(x)]++);
-    $("aFilters").innerHTML=[["avail","Available"],["unsold","Unsold"],["sold","Sold"],["all","All"]].map(([k,l])=>`<button data-af="${k}" class="${aFilter===k?"on":""}">${l} · ${counts[k]}</button>`).join("");
-    const rows=all.filter(x=>(aFilter==="all"||kind(x)===aFilter)&&(!q||norm(x.name).includes(q)));
-    $("sList").innerHTML=rows.length?rows.map(x=>playerRow(x.name,targetOf(x.name),x.s,cur)).join(""):`<div class="empty">No players here.</div>`;
-  }
+  if(sideTab==="plan"){ $("sList").innerHTML=renderPlan(cur); return; }
+  const q=norm($("aSearch").value); const all=S.pool.map(p=>({name:p.name,role:roleKey(p.role),s:st.get(norm(p.name))}));
+  const kind=x=>!x.s?"avail":x.s.kind==="unsold"?"unsold":"sold";
+  const counts={all:all.length,avail:0,sold:0,unsold:0}; all.forEach(x=>counts[kind(x)]++);
+  $("aFilters").innerHTML=[["avail","Available"],["unsold","Unsold"],["sold","Sold"],["all","All"]].map(([k,l])=>`<button data-af="${k}" class="${aFilter===k?"on":""}">${l} · ${counts[k]}</button>`).join("");
+  $("rFilters").innerHTML=[["all","Any role"],["bat","Batters"],["bowl","Bowlers"],["ar","All-rounders"],["none","No category"]].map(([k,l])=>`<button data-rf="${k}" class="${rFilter===k?"on":""}">${l}</button>`).join("");
+  const rows=all.filter(x=>(aFilter==="all"||kind(x)===aFilter)&&(rFilter==="all"||(rFilter==="none"?!["bat","bowl","ar"].includes(x.role):x.role===rFilter))&&(!q||norm(x.name).includes(q)));
+  $("sList").innerHTML=rows.length?rows.map(x=>playerRow(x.name,x.s,cur)).join(""):`<div class="empty">No players here.</div>`;
 }
 
 /* ======== sale panel ======== */
 function candidates(){
   const st=statusMap(), map=new Map();
-  const add=n=>{ const k=norm(n); if(map.has(k)) return; const s=st.get(k); if(s&&s.kind!=="unsold") return;
-    map.set(k,{name:n,target:targetOf(n),unsold:!!s}); };
-  wishList().forEach(w=>add(w.name)); S.pool.forEach(p=>add(p.name));
+  S.pool.forEach(p=>{ const k=norm(p.name); if(map.has(k)) return; const s=st.get(k); if(s&&s.kind!=="unsold") return;
+    map.set(k,{name:p.name,plan:!!planPickOf(p.name),unsold:!!s}); });
   return [...map.values()];
 }
 function computeMatches(q){
@@ -673,7 +870,7 @@ function computeMatches(q){
   const pre=[],word=[],sub=[];
   for(const x of candidates()){ const l=x.name.toLowerCase();
     if(l.startsWith(n)) pre.push(x); else if(l.split(/\s+/).some(w=>w.startsWith(n))) word.push(x); else if(n.length>=3&&l.includes(n)) sub.push(x); }
-  const o=(a,b)=>((b.target!=null)-(a.target!=null))||(a.unsold-b.unsold)||a.name.localeCompare(b.name);
+  const o=(a,b)=>(a.unsold-b.unsold)||a.name.localeCompare(b.name);
   return [...pre.sort(o),...word.sort(o),...sub.sort(o)];
 }
 function drawGhost(){
@@ -691,34 +888,47 @@ function accept(){ const m=matches[mIdx]; if(!m) return false; selectPlayer(m,tr
 function selectPlayer(m,focusNext){
   $("pName").value=m.name; sel=m; matches=[]; drawGhost();
   const t=targetOf(m.name); $("pTarget").value=t==null?"":t;
-  if(focusNext) $("pPrice").focus(); updateBuy(); markCur();
+  if(chosenTeam==="me") chosenCat=defaultCat(m.name);
+  renderChips(); if(focusNext) $("pPrice").focus(); updateBuy(); markCur(); if(sideTab==="plan"&&!isPriv()) renderSide();
 }
-function markCur(){ const cur=sel?norm(sel.name):""; document.querySelectorAll("#sList .wi").forEach(el=>{ const on=norm(el.dataset.pick)===cur; el.classList.toggle("cur",on); if(on) el.scrollIntoView({block:"nearest"}); }); }
+function markCur(){ const cur=sel?norm(sel.name):""; document.querySelectorAll("#sList [data-pick]").forEach(el=>{ const on=norm(el.dataset.pick)===cur; el.classList.toggle("cur",on&&el.classList.contains("wi")); if(on&&el.classList.contains("wi")) el.scrollIntoView({block:"nearest"}); }); }
 function updateBuy(){
   const name=$("pName").value.trim(), pv=$("pPrice").value, price=amt(pv), tv=$("pTarget").value, target=amt(tv);
-  const known = sel || (name && (poolOf(name)||wishOf(name)));
+  const known = sel || (name && poolOf(name));
   $("pPrev").innerHTML = pv ? (isNaN(price)?'<span style="color:var(--over)">Not a valid amount</span>':`${fmt(price)} · ${short(price)}`) : "Type 25L or 1.2Cr";
   $("tPrev").innerHTML = tv ? (isNaN(target)?'<span style="color:var(--over)">Not a valid amount</span>':`${fmt(target)} · ${short(target)}`) : "";
-  // meta
   let meta="";
   if(name){
-    const b=baseOf(name), t=target;
-    if(known){ meta=`${roleTag(roleOf(name))} ${t!=null?'<span class="star">★ On my list</span>':'<span class="small">Not on my list</span>'} ${b!=null?`<span class="small">Base <b>${fmt(b)}</b></span>`:""} ${sel&&sel.unsold?'<span class="tag t-unsold">Unsold earlier</span>':""}`; }
+    const b=baseOf(name), pp=planPickOf(name);
+    if(known){ meta=`${roleTag(roleOf(name))} ${pp?`<span class="star pv">★ My ${CAT_ONE[pp.pick.cat].toLowerCase()} pick, ${["1st","2nd","3rd"][pp.choice]} choice</span>`:'<span class="small pv">Not in my picks</span>'} ${b!=null?`<span class="small">Base <b>${fmt(b)}</b></span>`:""} ${sel&&sel.unsold?'<span class="tag t-unsold">Unsold earlier</span>':""}`; }
     else if(!matches.length) meta=`<span class="small">Not in the player file — will be recorded as typed.</span>`;
   } else meta=`<span class="small">Tab, → or Enter accepts the suggestion · ↓ ↑ for the next match</span>`;
   $("pMeta").innerHTML=meta;
   const isUns=chosenTeam==="unsold";
   $("priceRow").style.opacity=isUns?".4":""; $("pPrice").disabled=isUns;
-  // verdict
-  let v="";
-  if(!isUns && price!=null && !isNaN(price) && name){ const c=diffCls(price,target), who=chosenTeam&&chosenTeam!=="me"?teamShort(chosenTeam)+" paid":"";
-    v= c==="none" ? `<div class="verdict v-none">Not on your list — no target set.</div>`
-     : c==="under" ? `<div class="verdict v-under">▼ ${who?who+" ":""}${fmt(target-price)} under your target</div>`
-     : c==="over" ? `<div class="verdict v-over">▲ ${who?who+" ":""}${fmt(price-target)} over your target</div>`
-     : `<div class="verdict v-on">● Bang on your target</div>`; }
-  $("verdict").innerHTML=v;
-  // warnings + button
-  let w="", ok=!!name&&!!chosenTeam;
+  // plan guidance for our own buys
+  let g="", v="";
+  if(chosenTeam==="me"&&chosenCat){
+    const ps=planState(), c=ps.cats.find(x=>x.key===chosenCat);
+    if(c&&c.open>0){
+      g=`<div class="guide"><div class="g1"><span>Plan</span><b>${short(c.planMax)}</b></div><div class="g2"><span>With buffer</span><b>${short(c.bufMax)}</b></div><div class="g3"><span>Absolute max</span><b>${short(ps.max)}</b></div></div>`;
+      if(price!=null&&!isNaN(price)&&name){
+        const after=planState([...S.sales,{id:"tmp",name,team:"me",price,at:Date.now(),cat:chosenCat}]);
+        const tail=after.shortfall>0?`<small>After this you'd be ${fmt(after.shortfall)} over plan — the other open groups get trimmed by that.</small>`:`<small>After this: ${short(after.flex)} spare across the plan.</small>`;
+        if(price<=c.planMax) v=`<div class="verdict v-under">✓ Within plan for ${CAT_LABEL[chosenCat].toLowerCase()} (${short(c.planMax-price)} to spare)${tail}</div>`;
+        else if(price<=c.bufMax) v=`<div class="verdict v-amber">Uses ${short(price-c.planMax)} of your ${short(num(S.plan.buffer))} buffer${tail}</div>`;
+        else v=`<div class="verdict v-over">▲ ${short(price-c.bufMax)} beyond plan + buffer${tail}</div>`;
+      }
+    } else if(c) g=`<div class="warn" style="margin-top:10px">${CAT_LABEL[chosenCat]} is already full in your plan. This buy will be extra.</div>`;
+  } else if(!isUns && price!=null && !isNaN(price) && name && target!=null){
+    const cc=diffCls(price,target), who=chosenTeam&&chosenTeam!=="me"?teamShort(chosenTeam)+" paid ":"";
+    v= cc==="under" ? `<div class="verdict v-under">▼ ${who}${fmt(target-price)} under your target</div>` : cc==="over" ? `<div class="verdict v-over">▲ ${who}${fmt(price-target)} over your target</div>` : `<div class="verdict v-on">● On your target</div>`;
+  }
+  if(!v && chosenTeam && chosenTeam!=="me" && !isUns && name){ const pp=planPickOf(name);
+    if(pp){ const nxt=pp.pick.opts.slice(pp.choice+1).find(o=>{const s=statusMap().get(norm(o)); return !s||s.kind==="unsold";});
+      v=`<div class="verdict v-over">This is your ${["1st","2nd","3rd"][pp.choice]} choice for ${CAT_LABEL[pp.pick.cat].toLowerCase()}.<small>${nxt?"Next up: "+esc(nxt):"No back-ups left — the plan will suggest others."}</small></div>`; } }
+  $("guide").innerHTML=g; $("verdict").innerHTML=v;
+  let w="", ok=!!name&&!!chosenTeam&&(chosenTeam!=="me"||!!chosenCat);
   if(chosenTeam && !isUns){
     const s=teamStats(chosenTeam), b=baseOf(name);
     if(price==null||isNaN(price)) ok=false;
@@ -734,20 +944,23 @@ function updateBuy(){
 }
 function confirmSale(){
   if($("buyBtn").disabled){ toast("Fill in the name, team and price"); return; }
-  const typed=$("pName").value.trim(), name=sel?sel.name:((poolOf(typed)||wishOf(typed)||{}).name||tidyName(typed));
+  const typed=$("pName").value.trim(), name=sel?sel.name:((poolOf(typed)||{}).name||tidyName(typed));
   const st=statusMap().get(norm(name));
   if(st&&st.kind!=="unsold"){ toast(name+" is already with "+teamName(st.team)); return; }
-  const tv=$("pTarget").value, t=amt(tv);
-  if(sel||poolOf(name)){ // remember a target typed here
-    if(tv!=="" && !isNaN(t) && t!==targetOf(name)){ const w=wishOf(name); if(w) w.target=t; else poolOf(name).target=t; } }
+  const tv=$("pTarget").value, t=amt(tv), p0=poolOf(name);
+  if(p0&&tv!==""&&!isNaN(t)&&t!==p0.target) p0.target=t;
   if(chosenTeam==="unsold"){ if(!st) S.unsold.push({name,at:Date.now(),by:userName}); else S.unsold.find(u=>norm(u.name)===norm(name)).at=Date.now(); clearBuy(); commit(); toast(name+" marked unsold"); $("pName").focus(); return; }
   const price=amt($("pPrice").value);
   S.unsold=S.unsold.filter(u=>norm(u.name)!==norm(name));
-  if(!poolOf(name)) S.pool.push({name,base:null,target:null,role:""});
-  S.sales.push({id:"s"+Date.now(),name,team:chosenTeam,price,at:Date.now(),by:userName});
-  const who=teamName(chosenTeam); clearBuy(); commit(); toast(`${name} → ${who} for ${fmt(price)}`); $("pName").focus();
+  if(!p0) S.pool.push({name,base:null,target:null,role:""});
+  const sale={id:"s"+Date.now(),name,team:chosenTeam,price,at:Date.now(),by:userName}; if(chosenTeam==="me") sale.cat=chosenCat;
+  S.sales.push(sale);
+  const who=teamName(chosenTeam), pp=planPickOf(name); let extra="";
+  if(chosenTeam!=="me"&&pp&&!isPriv()){ const nxt=pp.pick.opts.slice(pp.choice+1).find(o=>{const s=statusMap().get(norm(o)); return !s||s.kind==="unsold";}); extra=nxt?" · Next up: "+nxt:" · No back-ups left"; }
+  clearBuy(); commit(); toast(`${name} → ${who} for ${fmt(price)}${extra}`); $("pName").focus();
 }
-function clearBuy(){ $("pName").value=""; $("pPrice").value=""; $("pTarget").value=""; sel=null; matches=[]; chosenTeam=""; drawGhost(); renderChips(); updateBuy(); markCur(); }
+function clearBuy(){ $("pName").value=""; $("pPrice").value=""; $("pTarget").value=""; sel=null; matches=[]; chosenTeam=""; chosenCat=""; drawGhost(); renderChips(); updateBuy(); markCur(); }
+function setPriv(on){ document.body.classList.toggle("priv",on); $("eyeBtn").textContent=on?"🔒 Plan hidden":"👁 Plan showing"; try{ sessionStorage.setItem(SS_EYE,on?"1":"0"); }catch(e){} renderSide(); updateBuy(); }
 
 /* ======== setup ======== */
 async function loadUsers(){
@@ -774,20 +987,42 @@ async function removeUser(u){
   try{ const {keys,sha}=await readKeysAuth(repo); delete keys.users[u]; await writeKeys(repo,keys,sha,"Remove login "+u); toast("Removed "+u); loadUsers(); }
   catch(e){ toast("Couldn't remove: "+e.message.slice(0,60)); }
 }
+const catSel = (v,attr) => `<select ${attr}>${["bat","ar","bowl"].map(k=>`<option value="${k}" ${v===k?"selected":""}>${CAT_ONE[k]}</option>`).join("")}</select>`;
 function fillSetup(){
   loadUsers();
   $("sTeam").value=S.team.name||""; $("sPurse").value=S.purse||""; $("sSize").value=S.squadSize||""; $("sMin").value=S.minBid||"";
-  $("fixedRows").innerHTML=S.fixed.map((f,i)=>`<div class="fixedrow">
+  $("fixedRows").innerHTML=`<div class="fixedrow"><span class="thdr">Label</span><span class="thdr">Name</span><span class="thdr">Price</span><span class="thdr">Plays as</span></div>`+S.fixed.map((f,i)=>`<div class="fixedrow">
     <input type="text" data-fx="${i}" data-k="slot" value="${esc(f.slot)}" placeholder="Label">
     <input type="text" data-fx="${i}" data-k="name" placeholder="Name" value="${esc(f.name)}">
-    <input type="text" data-fx="${i}" data-k="price" placeholder="Price" inputmode="decimal" value="${f.price||""}"></div>`).join("")
+    <input type="text" data-fx="${i}" data-k="price" placeholder="Price" inputmode="decimal" value="${f.price||""}">
+    <select data-fx="${i}" data-k="cat"><option value="">—</option>${["bat","ar","bowl"].map(k=>`<option value="${k}" ${f.cat===k?"selected":""}>${CAT_ONE[k]}</option>`).join("")}</select></div>`).join("")
     +`<div class="small">Total retained: ${fmt(S.fixed.reduce((a,f)=>a+num(f.price),0))}</div>`;
+  drawPlanRows(S.plan);
   drawTeamRows(S.teams);
-  const wb=S.pool.filter(p=>p.base!=null).length, wt=S.pool.filter(p=>p.target!=null).length;
-  $("poolInfo").innerHTML=S.pool.length?`<div class="ok">✓ ${S.pool.length} players · ${wb} with base price · ${wt} with target price</div>`:"";
-  $("wishInfo").innerHTML=S.wish.length?`<div class="ok">✓ ${S.wish.length} on uploaded wish list <button class="link red" id="clearWish">remove</button></div>`:`<div class="small">No wish list uploaded — using targets from the player file.</div>`;
+  const wb=S.pool.filter(p=>p.base!=null).length, wt=S.pool.filter(p=>p.target!=null).length, wc=S.pool.filter(p=>p.role).length;
+  $("poolInfo").innerHTML=S.pool.length?`<div class="ok">✓ ${S.pool.length} players · ${wc} with category · ${wb} with base price · ${wt} with target price</div>`:"";
   $("gRepo").value=repoGuess(); $("gTok").value="";
   $("gInfo").innerHTML=tok()?"✓ Connected on this device.":"Not connected — data is only on this device.";
+}
+function drawPlanRows(plan,notes){
+  $("catRows").innerHTML=CAT_KEYS.map(k=>{ const c=plan.cats.find(x=>x.key===k)||{slots:0,budget:0};
+    return `<div class="crow" data-ck="${k}"><b style="font-size:14px">${CAT_LABEL[k]}</b><input type="number" data-k="slots" min="0" value="${c.slots||0}"><input type="text" data-k="budget" inputmode="decimal" value="${c.budget||""}"></div>`; }).join("");
+  $("sBuffer").value=plan.buffer||"";
+  const tb=plan.cats.reduce((a,c)=>a+num(c.budget),0), left=teamStats("me").left+S.sales.filter(s=>s.team==="me").reduce((a,s)=>a+s.price,0);
+  $("catTotal").innerHTML=`Plan total <b>${fmt(tb)}</b> · kitty available for the auction <b>${fmt(left)}</b>${tb!==left?` · <span style="color:var(--over)">difference ${fmt(left-tb)}</span>`:" ✓ matches"}`;
+  $("pickRows").innerHTML=`<div class="prow thdrrow"><span class="thdr">Group</span><span class="thdr">1st choice</span><span class="thdr">2nd</span><span class="thdr">3rd</span><span></span></div>`+
+    plan.picks.map((p,i)=>`<div class="prow" data-pi="${i}">${catSel(p.cat,'data-k="cat"')}${[0,1,2].map(j=>{ const v=p.opts[j]||""; const bad=v&&!poolOf(v);
+      return `<input type="text" data-k="o${j}" value="${esc(v)}" placeholder="${j?"optional":"name"}" class="${bad?"badn":""}" title="${bad?"Not in the player list":""}">`; }).join("")}<button class="icon" data-rmpick="${i}" title="Remove">✕</button></div>`).join("");
+  const counts={}; plan.picks.forEach(p=>counts[p.cat]=(counts[p.cat]||0)+1);
+  const w=[...(notes||[])]; ["bat","ar","bowl"].forEach(k=>{ const c=plan.cats.find(x=>x.key===k); if(c&&(counts[k]||0)!==num(c.slots)) w.push(`${CAT_LABEL[k]}: ${counts[k]||0} pick(s) listed for ${c.slots} slot(s).`); });
+  plan.picks.forEach(p=>p.opts.forEach(o=>{ if(o&&!poolOf(o)) w.push(`"${o}" is not in the player list — type the full name as in the player file.`); }));
+  $("planWarn").innerHTML=[...new Set(w)].map(x=>`<div class="warn">${esc(x)}</div>`).join("");
+}
+function readPlanRows(){
+  const cats=CAT_KEYS.map(k=>{ const r=document.querySelector(`[data-ck=${k}]`); return {key:k,slots:Math.max(0,Math.round(num(r.querySelector("[data-k=slots]").value))),budget:amt(r.querySelector("[data-k=budget]").value)||0}; });
+  const picks=[...document.querySelectorAll("#pickRows .prow[data-pi]")].map(r=>({cat:r.querySelector("[data-k=cat]").value,
+    opts:[0,1,2].map(j=>r.querySelector(`[data-k=o${j}]`).value.trim()).filter(Boolean).map(n=>{ const x=resolveNick(n,r.querySelector("[data-k=cat]").value); return x&&x.ok?x.name:tidyName(n); })})).filter(p=>p.opts.length);
+  return {buffer:amt($("sBuffer").value)||0,cats,picks};
 }
 function drawTeamRows(teams){
   $("teamRows").innerHTML=teams.map((t,i)=>`<div class="trow" data-ti="${i}" data-id="${esc(t.id)}">
@@ -806,24 +1041,25 @@ async function onLogo(file){
   S.team.logo=c.toDataURL("image/png"); commit(); toast("Logo updated");
 }
 function exportAll(){
-  const wb=XLSX.utils.book_new(), st=statusMap();
-  const me=teamStats("me");
-  const sq=me.roster.map((r,i)=>({"#":i+1,Player:r.name,Type:r.sale?"Auction":r.note,"Base":baseOf(r.name)??"","My target":r.sale?(targetOf(r.name)??""):"","Price":r.price,"Vs target":r.sale&&targetOf(r.name)!=null?r.price-targetOf(r.name):""}));
+  const wb=XLSX.utils.book_new(), st=statusMap(), me=teamStats("me");
+  const sq=me.roster.map((r,i)=>({"#":i+1,Player:r.name,Type:r.sale?"Auction":r.note,"Plays as":r.cat?CAT_ONE[r.cat]:roleName(roleOf(r.name)),"Base":baseOf(r.name)??"","Price":r.price}));
   sq.push({},{Player:"Total kitty",Price:me.start},{Player:"Spent",Price:me.spent},{Player:"Left",Price:me.left});
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(sq),"My squad");
   const ids=["me",...S.teams.map(t=>t.id)];
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(ids.map(id=>{const s=teamStats(id);return {Team:teamName(id),"Starting kitty":s.start,Spent:s.spent,Left:s.left,Players:s.count,"Max bid":s.max};})),"Teams");
-  const log=[...S.sales].sort((a,b)=>a.at-b.at).map((s,i)=>({"#":i+1,Player:s.name,Team:teamName(s.team),Price:s.price,"My target":targetOf(s.name)??"",Time:new Date(s.at).toLocaleTimeString()}));
+  const log=[...S.sales].sort((a,b)=>a.at-b.at).map((s,i)=>({"#":i+1,Player:s.name,Category:roleName(roleOf(s.name)),Team:teamName(s.team),Price:s.price,"Entered by":s.by||"",Time:new Date(s.at).toLocaleTimeString()}));
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(log.length?log:[{Player:"—"}]),"Sales log");
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(S.pool.map(p=>{const s=st.get(norm(p.name));return {Player:p.name,Base:p.base??"",Target:p.target??"",Status:!s?"Available":s.kind==="unsold"?"Unsold":teamName(s.team),Price:s&&s.price!=null?s.price:""};})),"All players");
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(S.pool.map(p=>{const s=st.get(norm(p.name));return {Player:p.name,Category:p.role||"",Base:p.base??"",Status:!s?"Available":s.kind==="unsold"?"Unsold":teamName(s.team),Price:s&&s.price!=null?s.price:""};})),"All players");
+  if(!isPriv()){ const ps=planState();
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(ps.cats.map(c=>({Group:c.label,Slots:c.slots,Filled:c.filled,Budget:c.budget,Spent:c.spent,"Left / saved":c.R}))),"My plan"); }
   XLSX.writeFile(wb,"BPL_auction_"+new Date().toISOString().slice(0,10)+".xlsx");
 }
 
 /* ======== events ======== */
-async function doLogin(u,p,quiet){
+async function doLogin(u,p){
   if(await sha256(u+"|"+p)===LOGIN_HASH){ role="admin"; userName="admin"; }
   else {
-    if(u==="admin"){ return "Wrong username or password"; }
+    if(u==="admin") return "Wrong username or password";
     const k=await fetchKeys(); const entry=k&&k.users&&k.users[u];
     if(!entry) return k?"Wrong username or password":"Can't reach GitHub — check the internet and try again";
     try{ const t=await decryptTok(entry,p); localStorage.setItem(LS_TOK,t); }catch(e){ return "Wrong username or password"; }
@@ -841,17 +1077,19 @@ async function start(){
   document.querySelector('.tabs [data-tab=setup]').classList.toggle("hide",!isAdmin);
   $("tab-setup").classList.add("hide"); $("tab-auction").classList.remove("hide");
   $("hSub").textContent="Auction Desk · "+(isAdmin?"admin":userName);
+  let eye="1"; try{ eye=sessionStorage.getItem(SS_EYE)||"1"; }catch(e){} document.body.classList.toggle("priv",eye!=="0"); $("eyeBtn").textContent=eye!=="0"?"🔒 Plan hidden":"👁 Plan showing";
   loadLocal(); render();
   if(!tok()&&isAdmin) await tokenFromSite();
-  if(tok()) await cloudPull();   // get the latest shared copy first
+  if(tok()) await cloudPull();
   if(ensureSeed()) commit(); else render();
 }
-$("logout").onclick=()=>{ try{ sessionStorage.removeItem(SS_PW); if(role!=="admin") localStorage.removeItem(LS_TOK); }catch(e){} location.reload(); };
+$("logout").onclick=()=>{ try{ sessionStorage.removeItem(SS_PW); sessionStorage.removeItem(SS_EYE); if(role!=="admin") localStorage.removeItem(LS_TOK); }catch(e){} location.reload(); };
 document.querySelectorAll(".tabs [data-tab]").forEach(b=>b.onclick=()=>{
   document.querySelectorAll(".tabs [data-tab]").forEach(x=>x.classList.toggle("on",x===b));
   $("tab-auction").classList.toggle("hide",b.dataset.tab!=="auction"); $("tab-setup").classList.toggle("hide",b.dataset.tab!=="setup");
   if(b.dataset.tab==="setup") fillSetup(); window.scrollTo(0,0); });
 $("sync").onclick=()=>cloudPull();
+$("eyeBtn").onclick=()=>setPriv(!isPriv());
 
 $("pName").addEventListener("input",onType);
 $("pName").addEventListener("keydown",e=>{
@@ -863,7 +1101,10 @@ $("pName").addEventListener("keydown",e=>{
   else if(e.key==="Escape") clearBuy();
 });
 $("acceptBtn").onclick=accept;
-$("teamChips").onclick=e=>{ const b=e.target.closest("[data-team]"); if(!b) return; chosenTeam=chosenTeam===b.dataset.team?"":b.dataset.team; renderChips(); updateBuy(); if(chosenTeam&&chosenTeam!=="unsold"&&!$("pPrice").value) $("pPrice").focus(); };
+$("teamChips").onclick=e=>{ const b=e.target.closest("[data-team]"); if(!b) return; chosenTeam=chosenTeam===b.dataset.team?"":b.dataset.team;
+  chosenCat = chosenTeam==="me" ? defaultCat($("pName").value.trim()) : "";
+  renderChips(); updateBuy(); if(chosenTeam&&chosenTeam!=="unsold"&&!$("pPrice").value) $("pPrice").focus(); };
+$("catChips").onclick=e=>{ const b=e.target.closest("[data-cat]"); if(!b) return; chosenCat=b.dataset.cat; renderChips(); updateBuy(); };
 ["pPrice","pTarget"].forEach(id=>{ $(id).addEventListener("input",()=>{ if(id==="pPrice") renderChips(); updateBuy(); }); $(id).addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); confirmSale(); } }); });
 $("buyBtn").onclick=confirmSale;
 $("clearBtn").onclick=clearBuy;
@@ -883,10 +1124,12 @@ $("teamsList").onclick=e=>{ const t=e.target.closest(".team"); if(!t||!e.target.
 document.querySelector(".stabs").onclick=e=>{ const b=e.target.closest("[data-st]"); if(!b) return; sideTab=b.dataset.st; renderSide(); };
 $("aSearch").addEventListener("input",renderSide);
 $("aFilters").onclick=e=>{ const b=e.target.closest("[data-af]"); if(!b) return; aFilter=b.dataset.af; renderSide(); };
-$("sList").onclick=e=>{ const w=e.target.closest("[data-pick]"); if(!w) return;
+$("rFilters").onclick=e=>{ const b=e.target.closest("[data-rf]"); if(!b) return; rFilter=b.dataset.rf; renderSide(); };
+$("sList").onclick=e=>{ const eye=e.target.closest("[data-eye]"); if(eye){ setPriv(eye.dataset.eye!=="1"); return; }
+  const w=e.target.closest("[data-pick]"); if(!w) return;
   const c=candidates().find(x=>norm(x.name)===norm(w.dataset.pick));
   if(c){ selectPlayer(c,false); document.querySelector(".buy").scrollIntoView({behavior:"smooth",block:"start"}); }
-  else { const s=statusMap().get(norm(w.dataset.pick)); toast(w.dataset.pick+" is with "+teamName(s.team)); } };
+  else { const s=statusMap().get(norm(w.dataset.pick)); toast(s?w.dataset.pick+" is with "+teamName(s.team):w.dataset.pick+" isn't in the player list"); } };
 $("exportBtn").onclick=exportAll;
 
 $("saveTeam").onclick=()=>{ S.team.name=$("sTeam").value.trim()||"My team"; S.purse=amt($("sPurse").value)||0; S.squadSize=Math.round(num($("sSize").value)); S.minBid=amt($("sMin").value)||0;
@@ -894,6 +1137,16 @@ $("saveTeam").onclick=()=>{ S.team.name=$("sTeam").value.trim()||"My team"; S.pu
 $("saveFixed").onclick=()=>{ document.querySelectorAll("[data-fx]").forEach(inp=>{ const f=S.fixed[+inp.dataset.fx], k=inp.dataset.k;
     f[k]=k==="price"?(amt(inp.value)||0):k==="name"?((poolOf(inp.value)||{}).name||tidyName(inp.value)):inp.value.trim(); });
   commit(); fillSetup(); toast("Retained players saved — kitty updated"); };
+$("addPick").onclick=()=>{ const p=readPlanRows(); p.picks.push({cat:"bat",opts:[""]}); drawPlanRows(p); };
+$("pickRows").onclick=e=>{ const b=e.target.closest("[data-rmpick]"); if(!b) return; const p=readPlanRows(); const rows=[...document.querySelectorAll("#pickRows .prow[data-pi]")];
+  const keep=rows.map((r,i)=>i).filter(i=>i!==+b.dataset.rmpick); const all=rows.map(r=>({cat:r.querySelector("[data-k=cat]").value,opts:[0,1,2].map(j=>r.querySelector(`[data-k=o${j}]`).value.trim()).filter(Boolean)}));
+  p.picks=keep.map(i=>all[i]).filter(x=>x.opts.length); drawPlanRows(p); };
+$("savePlan").onclick=()=>{ S.plan=readPlanRows(); commit(); drawPlanRows(S.plan); toast("Plan saved"); };
+$("fWish").onchange=async e=>{ const f=e.target.files[0]; if(!f) return; try{ const r=parseWish(await readSheet(f)); if(!r.picks.length) throw 0;
+    const plan=readPlanRows(); plan.picks=r.picks; if(r.baseSlots){ const b=plan.cats.find(c=>c.key==="base"); b.slots=r.baseSlots; }
+    S.fixed.forEach(x=>{ const c=r.fixedCat[norm(x.name)]; if(c) x.cat=c; });
+    drawPlanRows(plan,r.notes); toast(`${r.picks.length} picks read — check them, then Save plan`); }
+  catch(err){ console.error(err); toast("Couldn't read that wish list"); } e.target.value=""; };
 $("addTeam").onclick=()=>{ const cur=readTeamRows(); cur.push({id:"t"+Date.now(),name:"",owner:"",start:0,pre:[]}); drawTeamRows(cur); };
 $("teamRows").onclick=e=>{ const b=e.target.closest("[data-rmteam]"); if(!b) return; const cur=readTeamRows(), t=cur[+b.dataset.rmteam];
   if(S.sales.some(s=>s.team===t.id)){ toast("This team has sales recorded — remove those first"); return; }
@@ -903,11 +1156,8 @@ $("sLogo").onchange=e=>{ if(e.target.files[0]) onLogo(e.target.files[0]); e.targ
 $("fPool").onchange=async e=>{ const f=e.target.files[0]; if(!f) return; try{ const list=mapRows(await readSheet(f)); if(!list.length) throw 0;
   const extra=S.sales.filter(s=>!list.some(p=>norm(p.name)===norm(s.name))).map(s=>({name:s.name,base:null,target:null,role:""}));
   S.pool=[...list,...extra]; commit(); fillSetup(); toast(list.length+" players loaded"); }catch(err){ console.error(err); toast("Couldn't read that file — check it has a Name column"); } e.target.value=""; };
-$("fWish").onchange=async e=>{ const f=e.target.files[0]; if(!f) return; try{ const list=mapRows(await readSheet(f)); if(!list.length) throw 0;
-  S.wish=list.map(w=>({name:(poolOf(w.name)||{}).name||w.name,target:w.target,role:w.role})); commit(); fillSetup(); toast(list.length+" wish-list players loaded"); }catch(err){ toast("Couldn't read that file — check it has a Name column"); } e.target.value=""; };
 $("nuAdd").onclick=addUser;
 $("userList").onclick=e=>{ const b=e.target.closest("[data-rmuser]"); if(b) removeUser(b.dataset.rmuser); };
-document.addEventListener("click",e=>{ if(e.target.id==="clearWish"&&confirm("Remove the uploaded wish list? Targets from the player file stay.")){ S.wish=[]; commit(); fillSetup(); } });
 $("gSave").onclick=async ()=>{
   const t=$("gTok").value.trim(), repo=$("gRepo").value.trim(); if(t) localStorage.setItem(LS_TOK,t); if(repo) localStorage.setItem(LS_REPO,repo);
   if(!tok()){ toast("Paste the token first"); return; }
@@ -920,7 +1170,7 @@ $("gSave").onclick=async ()=>{
 };
 $("backupBtn").onclick=()=>{ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:"application/json"})); a.download="auction-backup-"+new Date().toISOString().slice(0,16).replace(/[:T]/g,"-")+".json"; a.click(); };
 $("restoreF").onchange=async e=>{ const f=e.target.files[0]; if(!f) return; try{ const d=JSON.parse(await f.text()); if(!d.v) throw 0; if(!confirm("Replace all current data with this backup?")) return; S=upgrade(d); commit(); fillSetup(); toast("Backup restored"); }catch(err){ toast("Not a valid backup file"); } e.target.value=""; };
-$("resetAll").onclick=()=>{ if(!confirm("Clear every recorded sale and unsold mark? Teams, kitties, retained players and files stay.")) return; S.sales=[]; S.unsold=[]; commit(); toast("Auction reset"); };
+$("resetAll").onclick=()=>{ if(!confirm("Clear every recorded sale and unsold mark? Teams, kitties, plan, retained players and files stay.")) return; S.sales=[]; S.unsold=[]; commit(); toast("Auction reset"); };
 
 (async()=>{ let c=null; try{ c=JSON.parse(sessionStorage.getItem(SS_PW)); }catch(e){} if(c&&c.u){ const m=await doLogin(c.u,c.p); if(m){ try{sessionStorage.removeItem(SS_PW);}catch(e){} } } })();
 </script>
