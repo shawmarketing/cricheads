@@ -457,18 +457,20 @@ const ROLES = [["Batter","bat"],["Bowler","bowl"],["All-rounder","ar"],["Wicket-
 const CAT_KEYS = ["bat","ar","bowl","base"];
 const CAT_LABEL = {bat:"Batters",ar:"All-rounders",bowl:"Bowlers",base:"Base category"};
 const CAT_ONE = {bat:"Batter",ar:"All-rounder",bowl:"Bowler",base:"Base"};
-const SEED_ID = "bpl7", SEED2_ID = "bpl7-plan";
-const SEED_MASTER = [["Shail Shah", "Owner"], ["Karan Bhasin", "Owner"], ["Dhaval Mehta", "Bowler"], ["Dhaval Gajaria", "All Rounder"], ["Mathew Thomas", ""], ["Vineet Gangwani", "Bowler"], ["Ankit Kolwankar", "Batter"], ["Ameet Chandak", "All Rounder"], ["Roshan Makharia", "Bowler"], ["Gaurav Nishar", "Bowler"], ["Ved Sirdeshpande", "Batter"], ["Kunal Sheth", "All Rounder"], ["Kunal Lalu", "Icon"], ["Vatsal Shah", "All Rounder"], ["Darshan Sheth", "Owner"], ["Sagar Thakkar", "All Rounder"], ["Jigar Shah", ""], ["Rajesh Savla", "Batter"], ["Tarun Agarwal", "Batter"], ["Sachin Shah", "Bowler"], ["Alok Shah", "Batter"], ["Rachit Dedhia", "All Rounder"], ["Niranjan Ravishankar", "Bowler"], ["Mayank Gangar", "All Rounder"], ["Nigam Haria", "Icon"], ["Hardik Haria", "Owner"], ["Rachit Vora", "Bowler"], ["Jay Shah", "Batter"], ["Dhaval Gandhi", ""], ["Maneesh Jawkar", "All Rounder"], ["Hemal Shah", "Batter"], ["Siddharth Chheda", "Owner"], ["Amit Furia", "Bowler"], ["Jay Oza", "Batter"], ["Rushabh Daftari", "Batter"], ["Jimit Sanghavi", "Icon"], ["Varun Shobhawat", "Icon"], ["Chunky Shah", "Bowler"], ["Sumit Jain", ""], ["Rushil Parekh", "All Rounder"], ["Atash Shah", "All Rounder"], ["Viral Thakker", "Icon"], ["Nisarg Acharya", "Bowler"], ["Kushal Vora", "Bowler"], ["Jeet Gala", "Batter"], ["Srinath Sridhar", "Batter"], ["Shashank Singh", "All Rounder"], ["Karan Dedhia", ""], ["Vijay Shah", ""], ["Chintan Valia", "Batter"], ["Nirav Shah", "All Rounder"], ["Jasminder Khanna", "All Rounder"], ["Anvay Kolwankar", "Batter"], ["Dharmil", "Icon"], ["Karan Mulchandani", ""], ["Viraj Mehta", ""], ["Pramod Dubey", ""], ["Zaheer Ghani", "Owner"], ["Vishal Nahata", ""], ["Sumeet Yagnik", "Bowler"], ["Sachin Nisar", ""], ["Jinesh Sakariya", "Batter"], ["Hardik Doshi", "Batter"], ["Kavan Dedhia", "Batter"], ["Kalpesh Shah", "Bowler"], ["Himat Obhan", "All Rounder"], ["Priyanshu Shah", "Batter"], ["Sagar Doke", "All Rounder"], ["Deep", "Batter"], ["Nikhil Toprani", "Bowler"], ["Pratiek Mehta", "Batter"], ["Rishi Shinde", "Batter"], ["Rahul Gada", "Batter"], ["Ketan Shah", "Bowler"], ["Lalit Solanki", "Batter"], ["Aakash Parikh", "Bowler"], ["Hrishikesh Palve", "Owner"], ["Karan Lalwani", "Batter"], ["Rahul Dharap", "Owner"], ["Ashish Bhuva", "All Rounder"], ["Shalin Shah", "Bowler"], ["Ankur Mehta", "Icon"], ["Alistair Pinto", "All Rounder"], ["Milap Shah", "Bowler"], ["Rohan Punamiya", "Bowler"], ["Manish D Raval", "Bowler"], ["Vishesh Sangoi", "All Rounder"]];
+const SEED_ID = "bpl7", SEED2_ID = "bpl7-plan", SEED3_ID = "bpl7-final";
+const RENAME = {"manish d raval":"Manish Raval","dharmil":"Dharmil Vora","deep":"Deep Shah"};
+const TEAM_RENAME = {maratha:"Veer Marathas",champion:"Champion Challengers",unicorn:"Unicorn XI",fj:"FJ Gladiators",topline:"Topline Tigers",bhasin:"Bhasin Bigshots"};
+const SEED_MASTER = [["Shail Shah", "Owner FJ Gladiators"], ["Karan Bhasin", "Owner Bhasin Bigshots"], ["Dhaval Mehta", "Bowler"], ["Dhaval Gajaria", "All Rounder"], ["Mathew Thomas", ""], ["Vineet Gangwani", "Bowler"], ["Ankit Kolwankar", "Batter"], ["Ameet Chandak", "All Rounder"], ["Roshan Makharia", "Bowler"], ["Gaurav Nishar", ""], ["Ved Sirdeshpande", "Batter"], ["Kunal Sheth", "All Rounder"], ["Kunal Lalu", "ICON CRICHEADS"], ["Vatsal Shah", "All Rounder"], ["Darshan Sheth", "Owner UNICORN XI"], ["Sagar Thakkar", "All Rounder"], ["Jigar Shah", ""], ["Rajesh Savla", ""], ["Tarun Agarwal", "Batter"], ["Sachin Shah", "Bowler"], ["Alok Shah", "Batter"], ["Rachit Dedhia", "All Rounder"], ["Niranjan Ravishankar", "Bowler"], ["Mayank Gangar", "All Rounder"], ["Nigam Haria", "ICON FJ Gladiators"], ["Hardik Haria", "Owner Champion Challengers"], ["Rachit Vora", "Bowler"], ["Jay Shah", "Batter"], ["Dhaval Gandhi", ""], ["Maneesh Jawkar", "All Rounder"], ["Hemal Shah", "All Rounder"], ["Siddharth Chheda", "Owner Topline Tigers"], ["Amit Furia", "Bowler"], ["Jay Oza", ""], ["Rushabh Daftari", "Batter"], ["Jimit Sanghavi", "ICON Champion Challengers"], ["Varun Shobhawat", "ICON Veer Marathas"], ["Chunky Shah", "Bowler"], ["Sumit Jain", ""], ["Rushil Parekh", "All Rounder"], ["Atash Shah", "All Rounder"], ["Viral Thakker", "ICON Topline Tigers"], ["Nisarg Acharya", "Bowler"], ["Jeet Gala", "Batter"], ["Srinath Sridhar", "Batter"], ["Shashank Singh", "All Rounder"], ["Karan Dedhia", ""], ["Vijay Shah", ""], ["Chintan Valia", "Batter"], ["Nirav Shah", "All Rounder"], ["Jasminder Khanna", "All Rounder"], ["Anvay Kolwankar", "Batter"], ["Dharmil Vora", "ICON Bhasin Bigshots"], ["Karan Mulchandani", ""], ["Viraj Mehta", ""], ["Pramod Dubey", ""], ["Zaheer Ghani", "To be included in CRICHEADS as player"], ["Vishal Nahata", ""], ["Sumeet Yagnik", "Bowler"], ["Sachin Nisar", ""], ["Jinesh Sakariya", ""], ["Hardik Doshi", "Batter"], ["Kavan Dedhia", "Batter"], ["Kalpesh Shah", "All Rounder"], ["Himat Obhan", "All Rounder"], ["Priyanshu Shah", "Batter"], ["Sagar Doke", "All Rounder"], ["Deep Shah", "Batter"], ["Nikhil Toprani", "Bowler"], ["Pratiek Mehta", "Batter"], ["Rishi Shinde", "Batter"], ["Rahul Gada", "Batter"], ["Ketan Shah", "Bowler"], ["Lalit Solanki", "Batter"], ["Aakash Parikh", "Bowler"], ["Hrishikesh Palve", "Owner Veer Marathas"], ["Karan Lalwani", "Batter"], ["Rahul Dharap", "Owner CRICHEADS"], ["Ashish Bhuva", "All Rounder"], ["Shalin Shah", "Bowler"], ["Ankur Mehta", "ICON Unicorn XI"], ["Alistair Pinto", "Bowler"], ["Milap Shah", "Bowler"], ["Rohan Punamiya", ""], ["Manish Raval", "Bowler"], ["Minesh Adani", ""], ["Anand Shah", ""], ["Prakhyat Shetty", "Batter"], ["Saurabh V", "All Rounder"]];
 const SEED = {
   purse: 80000000,
   fixed: [{slot:"Icon",name:"Kunal Lalu",price:5000000,cat:"ar"},{slot:"Owner",name:"Rahul Dharap",price:4000000,cat:"bowl"},{slot:"Owner",name:"Zaheer Ghani",price:1000000,cat:"bat"}],
   teams: [
-    {id:"maratha", name:"Team Maratha", owner:"Hrishi",  start:69500000, pre:["Hrishikesh Palve","Varun Shobhawat"]},
-    {id:"champion",name:"Team Champion",owner:"Hardik",  start:44500000, pre:["Hardik Haria","Jimit Sanghavi"]},
-    {id:"unicorn", name:"Team Unicorn", owner:"Darshan", start:67000000, pre:["Darshan Sheth","Ankur Mehta"]},
-    {id:"fj",      name:"Team FJ",      owner:"Shail",   start:64500000, pre:["Shail Shah","Nigam Haria"]},
-    {id:"topline", name:"Team Topline", owner:"Sid",     start:63000000, pre:["Siddharth Chheda","Viral Thakker"]},
-    {id:"bhasin",  name:"Team Bhasin",  owner:"Karan",   start:56000000, pre:["Karan Bhasin","Dharmil"]}
+    {id:"maratha", name:"Veer Marathas", owner:"Hrishi",  start:69500000, pre:["Hrishikesh Palve","Varun Shobhawat"]},
+    {id:"champion",name:"Champion Challengers",owner:"Hardik",  start:44500000, pre:["Hardik Haria","Jimit Sanghavi"]},
+    {id:"unicorn", name:"Unicorn XI", owner:"Darshan", start:67000000, pre:["Darshan Sheth","Ankur Mehta"]},
+    {id:"fj",      name:"FJ Gladiators",      owner:"Shail",   start:64500000, pre:["Shail Shah","Nigam Haria"]},
+    {id:"topline", name:"Topline Tigers", owner:"Sid",     start:63000000, pre:["Siddharth Chheda","Viral Thakker"]},
+    {id:"bhasin",  name:"Bhasin Bigshots",  owner:"Karan",   start:56000000, pre:["Karan Bhasin","Dharmil Vora"]}
   ],
   plan: {
     buffer: 2000000,
@@ -478,8 +480,8 @@ const SEED = {
       {cat:"bat", opts:["Jay Shah","Lalit Solanki","Karan Lalwani"]},
       {cat:"ar",  opts:["Maneesh Jawkar","Rushil Parekh","Himat Obhan"]},
       {cat:"ar",  opts:["Ameet Chandak","Vatsal Shah","Dhaval Gajaria"]},
-      {cat:"bowl",opts:["Manish D Raval","Ketan Shah","Amit Furia"]},
-      {cat:"bowl",opts:["Kushal Vora","Mayank Gangar"]}
+      {cat:"bowl",opts:["Manish Raval","Ketan Shah","Amit Furia"]},
+      {cat:"bowl",opts:["Dhaval Mehta","Manish Raval","Mayank Gangar"]}
     ]
   }
 };
@@ -510,7 +512,7 @@ function short(n){ n=Math.round(n); const a=Math.abs(n), s=n<0?"−":"";
 const sgn = n => (n>0?"+":n<0?"−":"")+fmt(Math.abs(n)).replace("−","");
 function roleKey(r){ const s=norm(r); if(!s) return ""; if(/owner/.test(s)) return "own"; if(/icon/.test(s)) return "icon"; if(/wk|keep/.test(s)) return "wk"; if(/all|^ar$/.test(s)) return "ar"; if(/bowl/.test(s)) return "bowl"; if(/bat/.test(s)) return "bat"; if(/base/.test(s)) return "base"; return "x"; }
 function roleName(r){ const k=roleKey(r); const f=ROLES.find(x=>x[1]===k); return f?f[0]:(r||""); }
-const roleTag = r => r ? `<span class="tag r-${roleKey(r)||"x"}">${esc(roleName(r))}</span>` : "";
+const roleTag = r => (r&&roleKey(r)!=="x") ? `<span class="tag r-${roleKey(r)}">${esc(roleName(r))}</span>` : "";
 function tidyName(n){ return String(n||"").trim().replace(/\s+/g," ").split(" ").map(w=>(w===w.toLowerCase()||w===w.toUpperCase())?w.charAt(0).toUpperCase()+w.slice(1).toLowerCase():w).join(" "); }
 function toast(m){ const t=$("toast"); t.textContent=m; t.classList.remove("hide"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.add("hide"),3200); }
 async function sha256(s){ const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""); }
@@ -583,7 +585,7 @@ function planState(sales=S.sales){
   picks.forEach(p=>{ const s=mine.find(s=>!used.has(s.id)&&p.opts.some(o=>norm(o)===norm(s.name))); if(s){ p.filledBy=s; used.add(s.id); } });
   const stm=statusMap();
   picks.forEach(p=>{ p.optSt=p.opts.map(o=>{ const s=stm.get(norm(o)); return {name:o,known:!!poolOf(o)||!!s,st:!s?"avail":s.kind==="unsold"?"uns":s.kind==="mine"?"got":"gone",team:s&&s.team,price:s&&s.price}; });
-    p.next=p.filledBy?null:(p.optSt.find(o=>o.st==="avail"||o.st==="uns")||null); p.allGone=!p.filledBy&&!p.next; });
+    p.next=p.filledBy?null:(p.optSt.find(o=>o.known&&(o.st==="avail"||o.st==="uns"))||null); p.allGone=!p.filledBy&&!p.next; });
   cats.forEach(c=>{ const cp=picks.filter(p=>p.cat===c.key);
     // purchases in this group not tied to an option fill open picks (all-gone ones first)
     const extra=c.mine.filter(s=>!used.has(s.id));
@@ -608,10 +610,20 @@ function masterPool(keep){ // replace the list with the master, keeping prices a
 }
 function ensureSeed(){
   let changed=false;
-  if(S.seed!==SEED_ID&&S.seed!==SEED2_ID){ S.purse=SEED.purse; S.teams=JSON.parse(JSON.stringify(SEED.teams)); S.sales=[]; S.unsold=[]; S.pool=[]; S.seed=SEED_ID; changed=true; }
+  if(![SEED_ID,SEED2_ID,SEED3_ID].includes(S.seed)){ S.purse=SEED.purse; S.teams=JSON.parse(JSON.stringify(SEED.teams)); S.sales=[]; S.unsold=[]; S.pool=[]; S.seed=SEED_ID; changed=true; }
   if(S.seed===SEED_ID){
     S.fixed=JSON.parse(JSON.stringify(SEED.fixed)); S.pool=masterPool(S.pool); S.plan=JSON.parse(JSON.stringify(SEED.plan));
-    if(!S.squadSize) S.squadSize=11; S.seed=SEED2_ID; changed=true; }
+    if(!S.squadSize) S.squadSize=11; S.seed=SEED3_ID; changed=true; }
+  if(S.seed===SEED2_ID){ // final player list (Nov 20): renamed players, new names, official team names
+    const rn=n=>RENAME[norm(n)]||n;
+    S.pool.forEach(p=>p.name=rn(p.name)); S.plan.picks.forEach(p=>p.opts=p.opts.map(rn));
+    S.teams.forEach(t=>{ t.pre=t.pre.map(rn); if(TEAM_RENAME[t.id]&&/^team\s/i.test(t.name)) t.name=TEAM_RENAME[t.id]; });
+    S.fixed.forEach(f=>f.name=rn(f.name)); S.sales.forEach(x=>x.name=rn(x.name)); S.unsold.forEach(x=>x.name=rn(x.name));
+    S.pool=masterPool(S.pool); S.seed=SEED3_ID; changed=true; }
+  // base price 5 lakh for every player, and as the minimum bid (Nov 20)
+  if(!S.base5){ S.pool.forEach(p=>{ if(p.base==null) p.base=500000; }); if(!S.minBid) S.minBid=500000; S.base5=1; changed=true; }
+  // Kushal Vora left the final list: replaced by Dhaval Mehta, then Manish Raval (Nov 20)
+  S.plan.picks.forEach(p=>{ if(p.opts.some(o=>norm(o)==="kushal vora")){ p.opts=["Dhaval Mehta","Manish Raval","Mayank Gangar"]; changed=true; } });
   // nickname fix-ups for plans saved before the full name was known
   S.plan.picks.forEach(p=>p.opts=p.opts.map(o=>{ const a=ALIAS[norm(o)]; if(a&&a!==o&&!poolOf(o)){ changed=true; return a; } return o; }));
   return changed;
@@ -828,8 +840,8 @@ function renderPlan(cur){
     if(ret.length) h+=`<div class="retl">Retained: ${ret.map(f=>`<b>${esc(f.name)}</b>`).join(", ")}</div>`;
     c.picks.forEach((p,pi)=>{
       const chips=p.optSt.map((o,j)=>{ const cls=o.st==="got"?"got":o.st==="gone"?"gone":o.st==="uns"?"uns":""; const nx=p.next&&p.next.name===o.name?"next":""; const bad=!o.known?"bad":"";
-        const ttl=o.st==="gone"?`${teamShort(o.team)}${o.price!=null?" · "+short(o.price):""}`:!o.known?"Not in the player list":"";
-        return `${j?'<span class="arrow">›</span>':""}<button class="opt ${cls} ${nx} ${bad} ${norm(o.name)===cur?"next":""}" data-pick="${esc(o.name)}" title="${esc(ttl)}"><i>${j+1}</i>${esc(o.name)}</button>`; }).join("");
+        const ttl=o.st==="gone"?`${teamShort(o.team)}${o.price!=null?" · "+short(o.price):""}`:!o.known?"Not in the final player list":"";
+        return `${j?'<span class="arrow">›</span>':""}<button class="opt ${cls} ${nx} ${bad} ${norm(o.name)===cur?"next":""}" data-pick="${esc(o.name)}" title="${esc(ttl)}"><i>${j+1}</i>${esc(o.name)}${!o.known?" (not in list)":""}</button>`; }).join("");
       let stat="";
       if(p.filledBy) stat=`<div class="pstat okk">✓ Got <b>${esc(p.filledBy.name)}</b> for ${fmt(p.filledBy.price)}${p.other?" (not one of the choices)":""}</div>`;
       else if(p.next) stat=`<div class="pstat">Up now: <b>${esc(p.next.name)}</b>${p.next.st==="uns"?" (went unsold — may come back)":""}</div>`;
@@ -925,7 +937,7 @@ function updateBuy(){
     v= cc==="under" ? `<div class="verdict v-under">▼ ${who}${fmt(target-price)} under your target</div>` : cc==="over" ? `<div class="verdict v-over">▲ ${who}${fmt(price-target)} over your target</div>` : `<div class="verdict v-on">● On your target</div>`;
   }
   if(!v && chosenTeam && chosenTeam!=="me" && !isUns && name){ const pp=planPickOf(name);
-    if(pp){ const nxt=pp.pick.opts.slice(pp.choice+1).find(o=>{const s=statusMap().get(norm(o)); return !s||s.kind==="unsold";});
+    if(pp){ const nxt=pp.pick.opts.slice(pp.choice+1).find(o=>{const s=statusMap().get(norm(o)); return poolOf(o)&&(!s||s.kind==="unsold");});
       v=`<div class="verdict v-over">This is your ${["1st","2nd","3rd"][pp.choice]} choice for ${CAT_LABEL[pp.pick.cat].toLowerCase()}.<small>${nxt?"Next up: "+esc(nxt):"No back-ups left — the plan will suggest others."}</small></div>`; } }
   $("guide").innerHTML=g; $("verdict").innerHTML=v;
   let w="", ok=!!name&&!!chosenTeam&&(chosenTeam!=="me"||!!chosenCat);
@@ -956,7 +968,7 @@ function confirmSale(){
   const sale={id:"s"+Date.now(),name,team:chosenTeam,price,at:Date.now(),by:userName}; if(chosenTeam==="me") sale.cat=chosenCat;
   S.sales.push(sale);
   const who=teamName(chosenTeam), pp=planPickOf(name); let extra="";
-  if(chosenTeam!=="me"&&pp&&!isPriv()){ const nxt=pp.pick.opts.slice(pp.choice+1).find(o=>{const s=statusMap().get(norm(o)); return !s||s.kind==="unsold";}); extra=nxt?" · Next up: "+nxt:" · No back-ups left"; }
+  if(chosenTeam!=="me"&&pp&&!isPriv()){ const nxt=pp.pick.opts.slice(pp.choice+1).find(o=>{const s=statusMap().get(norm(o)); return poolOf(o)&&(!s||s.kind==="unsold");}); extra=nxt?" · Next up: "+nxt:" · No back-ups left"; }
   clearBuy(); commit(); toast(`${name} → ${who} for ${fmt(price)}${extra}`); $("pName").focus();
 }
 function clearBuy(){ $("pName").value=""; $("pPrice").value=""; $("pTarget").value=""; sel=null; matches=[]; chosenTeam=""; chosenCat=""; drawGhost(); renderChips(); updateBuy(); markCur(); }
